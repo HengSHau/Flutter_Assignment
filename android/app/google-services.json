@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "54135923263",
+    "project_id": "maeassignment-bcbd1",
+    "storage_bucket": "maeassignment-bcbd1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:54135923263:android:ebad318ca928cc96ef8e8a",
+        "android_client_info": {
+          "package_name": "com.example.flutter_assignment"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyJHeijCLL08radtNC5WDZ3k-BT3q1ItE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
