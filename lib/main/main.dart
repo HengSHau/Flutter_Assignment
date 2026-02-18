@@ -11,10 +11,11 @@ class MyApp extends StatelessWidget {
 
     @override
     Widget build(BuildContext context) {
+      final themes = Themes(ThemeData.light().textTheme);
         return MaterialApp(
-            title: 'Flutter Demo',
-            theme: Themes.lightTheme(),
-            darkTheme: Themes.darkTheme(),
+            title: 'Flutter Assignment',
+            theme: themes.light(),
+            darkTheme: themes.dark(),
             themeMode: ThemeMode.system,
             home: const LoginPage(),
             debugShowCheckedModeBanner: false,
