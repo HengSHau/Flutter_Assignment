@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_assignment/main/Appbar.dart';
 import 'package:flutter_assignment/main/HomePage.dart';
-import 'package:flutter_assignment/main/ChatPage.dart';
-import 'package:flutter_assignment/main/Profile.dart';
+import 'package:flutter_assignment/main/ChatHomePage.dart';
 import 'package:flutter_assignment/main/SettingsPage.dart';
 
 class Home extends StatefulWidget {
@@ -17,7 +16,7 @@ class _HomeState extends State<Home> {
 
   final List<Widget> _pages = const [
     HomePage(),
-    ChatPage(),
+    ChatHomePage(),
     SettingsPage(),
     SettingsPage(),
   ];

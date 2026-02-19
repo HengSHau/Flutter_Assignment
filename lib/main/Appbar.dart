@@ -5,12 +5,14 @@ class CommonAppBar extends StatelessWidget
   implements PreferredSizeWidget {
   final String title;
   final bool showBack;
+  final bool showProfile;
   final List<Widget>? actions;
 
   const CommonAppBar({
     super.key,
     required this.title,
     this.showBack = false,
+    this.showProfile = true,
     this.actions,
   });
 
@@ -19,32 +21,37 @@ class CommonAppBar extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return AppBar(
       automaticallyImplyLeading: false,
       leading: showBack
-          ? IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () => Navigator.pop(context),
-            )
-          : null,
+        ? IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => Navigator.pop(context),
+          )
+        : null,
       title: Text(title),
-      actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const Profile(),
-                        ),
-                      );
-            },
-            icon: CircleAvatar(
-              radius: 18,
-              backgroundImage: AssetImage('assets/images/profile.png'),
-              backgroundColor: Theme.of(context).colorScheme.surface,
+      actions: showProfile
+        ? [IconButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const Profile(),
+              ),
+            );
+          },
+          icon: CircleAvatar(
+            radius: 18,
+            backgroundColor: isDark ? Colors.grey[800] : Colors.grey[200],
+            child: Icon(
+              Icons.person,
+              size: 24,
+              color: isDark ? Colors.white : Colors.black,
             ),
           ),
-      ],
+        )]
+      : null,
     );
   }
 }
