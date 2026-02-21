@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_assignment/core/widgets/Appbar.dart';
+import 'package:flutter_assignment/core/widgets/CommonAppbar.dart';
 
 class ChatDetailPage extends StatefulWidget {
   const ChatDetailPage({super.key});
