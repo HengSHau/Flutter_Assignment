@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_assignment/main/Appbar.dart';
-import 'package:flutter_assignment/main/HomePage.dart';
-import 'package:flutter_assignment/main/ChatHomePage.dart';
-import 'package:flutter_assignment/main/SettingsPage.dart';
+import 'package:flutter_assignment/core/widgets/Appbar.dart';
+import 'package:flutter_assignment/features/home/views/HomePage.dart';
+import 'package:flutter_assignment/features/chat/views/ChatHomePage.dart';
+import 'package:flutter_assignment/features/settings/views/SettingsPage.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});

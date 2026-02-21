@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_assignment/main/LoginPage.dart';
-import 'package:flutter_assignment/main/theme.dart';
+import 'package:flutter_assignment/features/auth/views/LoginPage.dart';
+import 'package:flutter_assignment/core/theme/theme.dart';
 
 void main() {
     runApp(const MyApp());

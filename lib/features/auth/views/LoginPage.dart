@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_assignment/main/Home.dart';
-import 'package:flutter_assignment/main/RegisterPage.dart';
+import 'package:flutter_assignment/features/home/models/Home.dart';
+import 'package:flutter_assignment/features/auth/views/RegisterPage.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});

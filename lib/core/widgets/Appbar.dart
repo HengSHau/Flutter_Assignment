@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_assignment/main/Profile.dart';
+import 'package:flutter_assignment/features/profile/views/Profile.dart';
 
 class CommonAppBar extends StatelessWidget
   implements PreferredSizeWidget {
