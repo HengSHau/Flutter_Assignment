@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_assignment/features/home/models/Home_model.dart';
+import 'package:flutter_assignment/features/homepage/viewmodels/homePage_viewmodel.dart';
 import 'package:flutter_assignment/features/auth/views/RegisterPage_view.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+  const LoginPage({super.key,required this.themeNotifier,});
+  final ValueNotifier<ThemeMode> themeNotifier;
 
   @override
   Widget build(BuildContext context) {
@@ -88,8 +89,10 @@ class LoginPage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const Home(),
-                        ),
+                          builder: (_) => Home(
+                            themeNotifier: themeNotifier,
+                          ),
+                        )
                       );
                     },
                     style: ElevatedButton.styleFrom(                      

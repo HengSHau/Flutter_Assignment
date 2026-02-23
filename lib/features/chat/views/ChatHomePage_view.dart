@@ -1,14 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_assignment/features/chat/views/ChatDetailPage_view.dart';
+import 'package:flutter_assignment/features/chat/views/ChatPage_view.dart';
+
+class ChatItem {
+  final String name;
+  final String lastMessage;
+  final String time;
+  int unread;
+
+  ChatItem({
+    required this.name,
+    required this.lastMessage,
+    required this.time,
+    this.unread = 0,
+  });
+}
 
 class ChatHomePage extends StatefulWidget {
   const ChatHomePage({super.key});
 
   @override
-  State<ChatHomePage> createState() => _ChatHomePageState();
+  State<ChatHomePage> createState() => ChatHomePageState();
 }
 
-class _ChatHomePageState extends State<ChatHomePage> {
+class ChatHomePageState extends State<ChatHomePage> {
+  final List<ChatItem> chats = List.generate(
+    10,
+    (i) => ChatItem(
+      name: 'User $i',
+      lastMessage: 'Hello 👋',
+      time: '12:30',
+      unread: i % 3 == 0 ? 1 : 0,
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,50 +50,67 @@ class _ChatHomePageState extends State<ChatHomePage> {
               ),
             ),
           ),
+
           Expanded(
             child: ListView.separated(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              itemCount: 10,
-              separatorBuilder: (_, __) => const Divider(height: 1),
+              itemCount: chats.length,
+              separatorBuilder: (_, __) => const Divider(color: Colors.transparent,height: 0),
               itemBuilder: (context, index) {
+                final chat = chats[index];
+
                 return ListTile(
                   leading: Stack(
-                    children: const [
-                      CircleAvatar(child: Icon(Icons.person)), //profile picture
-                      Positioned(
-                        right: 0,
-                        top: 0,
-                        child: CircleAvatar(
-                          radius: 6,
-                          backgroundColor: Colors.red, //unread
+                    children: [
+                      const CircleAvatar(
+                        child: Icon(Icons.person),
+                      ),
+
+                      if (chat.unread > 0)
+                        Positioned(
+                          right: 0,
+                          top: 0,
+                          child: CircleAvatar(
+                            radius: 8,
+                            backgroundColor: Colors.red,
+                            child: Text(
+                              chat.unread.toString(),
+                              style: const TextStyle(
+                                fontSize: 10,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
                         ),
-                      )
                     ],
                   ),
-                  title: Text('User $index'), //user name
-                  subtitle: const Text(
-                    'Last message preview...', //last message
+                  title: Text(chat.name),
+                  subtitle: Text(
+                    chat.lastMessage,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  trailing: const Text(
-                    '12:30', //timestamp
-                    style: TextStyle(fontSize: 12),
+                  trailing: Text(
+                    chat.time,
+                    style: const TextStyle(fontSize: 12),
                   ),
-                  onTap: () {
-                    Navigator.push(
+                  onTap: () async {
+                    await Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => ChatDetailPage(),
+                        builder: (_) => const ChatPage(),
                       ),
                     );
+
+                    setState(() {
+                      chat.unread = 0;
+                    });
                   },
                 );
               },
             ),
-          )
-        ]
-      )
+          ),
+        ],
+      ),
     );
   }
 }
