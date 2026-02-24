@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_assignment/core/widgets/CommonAppBar.dart';
+import 'package:flutter_assignment/core/widgets/commonAppbar.dart';
+import 'package:flutter_assignment/features/auth/views/loginPage_view.dart';
 
 class Profile extends StatefulWidget {
-  const Profile({super.key});
+  const Profile({super.key, required this.themeNotifier});
+  final ValueNotifier<ThemeMode> themeNotifier;
 
   @override
-  State<Profile> createState() => _ProfileState();
+  State<Profile> createState() => ProfileState();
 }
 
-class _ProfileState extends State<Profile> {
+class ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CommonAppBar(
         title: 'Profile',
         showBack: true,
-        showProfile: false
+        showProfile: false,
+        themeNotifier: widget.themeNotifier,
       ),
 
       body: Center(
@@ -58,7 +61,15 @@ class _ProfileState extends State<Profile> {
               Align(
                 alignment: Alignment.bottomRight,
                 child:ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => LoginPage(themeNotifier: widget.themeNotifier),
+                      ),
+                      (route) => false,
+                    );
+                  },
                   child: const Text('Logout'),
                 )
             )

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_assignment/core/widgets/commonAppbar.dart';
 import 'package:flutter_assignment/features/homepage/viewmodels/homePage_viewmodel.dart';
 import 'package:flutter_assignment/features/auth/views/RegisterPage_view.dart';
 
@@ -9,8 +10,10 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Login'),
+      appBar: CommonAppBar(
+        title: 'Login',
+        showProfile: false,
+        themeNotifier: themeNotifier,
       ),
       body: SingleChildScrollView(
         child: Center(
@@ -89,9 +92,7 @@ class LoginPage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => Home(
-                            themeNotifier: themeNotifier,
-                          ),
+                          builder: (_) => Home(themeNotifier: themeNotifier,),
                         )
                       );
                     },

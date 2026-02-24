@@ -26,8 +26,8 @@ class HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     final pages = [
-      const HomePage(),
-      const ChatHomePage(),
+      HomePage(),
+      ChatHomePage(themeNotifier: widget.themeNotifier),
       const CustomerFunctionPage(),
       SettingsPage(themeNotifier: widget.themeNotifier),
     ];
@@ -36,6 +36,7 @@ class HomeState extends State<Home> {
       appBar: CommonAppBar(
         title: _titles[_currentIndex],
         showBack: false,
+        themeNotifier: widget.themeNotifier,
       ),
       body: pages[_currentIndex],
       bottomNavigationBar: buildBottomNavBar(

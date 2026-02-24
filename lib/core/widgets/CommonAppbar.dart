@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_assignment/features/profile/views/Profile_view.dart';
+import 'package:flutter_assignment/features/profile/views/profile_view.dart';
 
 class CommonAppBar extends StatelessWidget
   implements PreferredSizeWidget {
@@ -8,13 +8,16 @@ class CommonAppBar extends StatelessWidget
   final bool showProfile;
   final List<Widget>? actions;
 
-  const CommonAppBar({
+  CommonAppBar({
     super.key,
     required this.title,
     this.showBack = false,
     this.showProfile = true,
     this.actions,
+    required this.themeNotifier
   });
+
+  final ValueNotifier<ThemeMode> themeNotifier;
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -37,7 +40,7 @@ class CommonAppBar extends StatelessWidget
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const Profile(),
+                builder: (context) => Profile(themeNotifier: themeNotifier),
               ),
             );
           },

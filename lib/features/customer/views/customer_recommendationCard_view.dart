@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_assignment/core/theme/theme.dart';
 
 class RecommendationCard extends StatelessWidget {
   final String username;

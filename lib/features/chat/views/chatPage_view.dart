@@ -3,7 +3,8 @@ import 'package:flutter_assignment/core/widgets/commonAppbar.dart';
 import 'package:flutter_assignment/features/chat/viewmodels/chatPage_viewmodel.dart';
 
 class ChatPage extends StatefulWidget {
-  const ChatPage({super.key});
+  const ChatPage({super.key, required this.themeNotifier});
+  final ValueNotifier<ThemeMode> themeNotifier;
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -36,8 +37,7 @@ class _ChatPageState extends State<ChatPage> {
       animation: vm,
       builder: (context, _) {
         return Scaffold(
-          appBar: CommonAppBar(title: 'Chat', showBack: true, showProfile: false
-          ),
+          appBar: CommonAppBar(title: 'Chat', showBack: true, showProfile: false, themeNotifier: widget.themeNotifier,),
           body: Column(
             children: [
               Expanded(

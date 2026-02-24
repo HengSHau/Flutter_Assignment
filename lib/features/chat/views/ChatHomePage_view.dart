@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_assignment/features/chat/views/ChatPage_view.dart';
+import 'package:flutter_assignment/features/chat/views/chatPage_view.dart';
 
 class ChatItem {
   final String name;
@@ -11,12 +11,14 @@ class ChatItem {
     required this.name,
     required this.lastMessage,
     required this.time,
-    this.unread = 0,
+    this.unread = 0, 
   });
+
 }
 
 class ChatHomePage extends StatefulWidget {
-  const ChatHomePage({super.key});
+  const ChatHomePage({super.key, required this.themeNotifier});
+  final ValueNotifier<ThemeMode> themeNotifier;
 
   @override
   State<ChatHomePage> createState() => ChatHomePageState();
@@ -97,7 +99,7 @@ class ChatHomePageState extends State<ChatHomePage> {
                     await Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const ChatPage(),
+                        builder: (_) => ChatPage(themeNotifier: widget.themeNotifier),
                       ),
                     );
 
