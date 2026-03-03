@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_assignment/features/customer/viewmodels/customer_functionPage_viewmodel.dart';
-import 'package:flutter_assignment/features/customer/views/customer_recommendationCard_view.dart';
+import 'package:flutter_assignment/features/User/viewmodels/customer_functionPage_viewmodel.dart';
+import 'package:flutter_assignment/features/User/views/customer_recommendationCard_view.dart';
 
 class CustomerMyCourseView extends StatefulWidget {
   const CustomerMyCourseView({super.key});

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_assignment/core/widgets/commonAppbar.dart';
 import 'package:flutter_assignment/features/homepage/views/homePage_view.dart';
 import 'package:flutter_assignment/features/chat/views/chatHomePage_view.dart';
-import 'package:flutter_assignment/features/customer/views/customer_functionPage_view.dart';
+import 'package:flutter_assignment/features/User/views/customer_functionPage_view.dart';
 import 'package:flutter_assignment/features/settings/views/settingsPage_view.dart';
 
 class Home extends StatefulWidget {
