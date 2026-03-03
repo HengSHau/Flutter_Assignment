@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_assignment/features/customer/viewmodels/customer_functionPage_viewmodel.dart';
-import 'package:flutter_assignment/features/customer/views/customer_discover_view.dart';
-import 'package:flutter_assignment/features/customer/views/customer_mycourse_view.dart';
+import 'package:flutter_assignment/features/User/views/customer_discover_view.dart';
+import 'package:flutter_assignment/features/User/views/customer_mycourse_view.dart';
 
 class CustomerFunctionPage extends StatefulWidget {
   const CustomerFunctionPage({super.key});
