@@ -40,6 +40,19 @@ class _SettingsPageState extends State<SettingsPage> {
 
             const SizedBox(height: 20),
 
+            ElevatedButton.icon( 
+              onPressed: () {}, 
+              icon: const Icon( Icons.feedback, size: 16, ), 
+              label: const Text( 
+                'Feedback', 
+                style: TextStyle( 
+                  fontSize: 12, fontWeight: FontWeight.bold, 
+                ), 
+              ), 
+            ), 
+
+            const SizedBox(height: 20),
+
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [

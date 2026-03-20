@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_assignment/core/widgets/commonAppbar.dart';
 import 'package:flutter_assignment/features/homepage/views/homePage_view.dart';
 import 'package:flutter_assignment/features/chat/views/chatHomePage_view.dart';
+import 'package:flutter_assignment/features/admin/views/admin_functionPage_view.dart';
 import 'package:flutter_assignment/features/customer/views/customer_functionPage_view.dart';
+import 'package:flutter_assignment/features/finance/views/finance_functionPage_view.dart';
 import 'package:flutter_assignment/features/settings/views/settingsPage_view.dart';
 
 class Home extends StatefulWidget {
@@ -28,7 +30,7 @@ class HomeState extends State<Home> {
     final pages = [
       HomePage(),
       ChatHomePage(themeNotifier: widget.themeNotifier),
-      const CustomerFunctionPage(),
+      AdminFunctionPage(), //change page by different role
       SettingsPage(themeNotifier: widget.themeNotifier),
     ];
 

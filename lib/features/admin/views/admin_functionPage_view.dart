@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_assignment/features/finance/viewmodels/finance_functionPage_viewmodel.dart';
-import 'package:flutter_assignment/features/finance/views/finance_dailyReport_view.dart';
-import 'package:flutter_assignment/features/finance/views/finance_monthlyReport_view.dart';
-import 'package:flutter_assignment/features/finance/views/finance_yearlyReport_view.dart';
+import 'package:flutter_assignment/features/admin/viewmodels/admin_functionPage_viewmodel.dart';
+import 'package:flutter_assignment/features/admin/views/admin_addStaff_view.dart';
+import 'package:flutter_assignment/features/admin/views/admin_editStaff_view.dart';
+import 'package:flutter_assignment/features/admin/views/admin_viewReport_view.dart';
 
-class FinanceFunctionPage extends StatefulWidget {
-  const FinanceFunctionPage({super.key});
+class AdminFunctionPage extends StatefulWidget {
+  const AdminFunctionPage({super.key});
 
   @override
-  State<FinanceFunctionPage> createState() =>
-      _FinanceFunctionPageState();
+  State<AdminFunctionPage> createState() =>
+      _AdminFunctionPageState();
 }
 
-class _FinanceFunctionPageState extends State<FinanceFunctionPage>
+class _AdminFunctionPageState extends State<AdminFunctionPage>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
-  final vm = FinanceFunctionViewModel();
+  final vm = AdminFunctionViewModel();
 
   final List<Widget> pages = const [
-    FinanceDailyView(),
-    FinanceMonthlyView(),
-    FinanceYearlyView()
+    AdminAddStaff(),
+    AdminEditStaff(),
+    AdminViewReport()
   ];
 
   @override
