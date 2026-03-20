@@ -1,63 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // ADDED
+import '../model/message_model.dart';
 
 class ChatPageViewModel extends ChangeNotifier {
-  final TextEditingController textController = TextEditingController();
-  final ScrollController scrollController = ScrollController();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  final List<Map<String, dynamic>> messages = [];
-  int unreadCount = 0;
-  bool isPageVisible = false;
+  // DYNAMIC DETECTION
+  String get currentUserId => _auth.currentUser?.uid ?? '';
 
-  void sendMessage() {
-    final text = textController.text.trim();
-    if (text.isEmpty) return;
-
-    messages.add({
-      'text': text,
-      'isMe': true,
-    });
-
-    textController.clear();
-    notifyListeners();
-    _scrollToBottom();
-  }
-
-  void receiveMessage(String text, {bool pageVisible = true}) {
-    messages.add({
-      'text': text,
-      'isMe': false,
-    });
-
-    if (!pageVisible) {
-      unreadCount++;
-    }
-
-    notifyListeners();
-    _scrollToBottom();
-  }
-
-  void markAsRead() {
-    if(unreadCount == 0) return;
-
-    unreadCount = 0;
-    notifyListeners();
-  }
-
-  void _scrollToBottom() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!scrollController.hasClients) return;
-      scrollController.animateTo(
-        scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
+  Stream<List<MessageModel>> getMessagesStream(String chatId) {
+    return _firestore
+        .collection('chats')
+        .doc(chatId)
+        .collection('messages')
+        .orderBy('timestamp', descending: true)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs.map((doc) => MessageModel.fromFirestore(doc)).toList();
     });
   }
 
-  @override
-  void dispose() {
-    textController.dispose();
-    scrollController.dispose();
-    super.dispose();
+  Future<void> sendMessage(String chatId, String text) async {
+    if (text.trim().isEmpty) return;
+
+    await _firestore
+        .collection('chats')
+        .doc(chatId)
+        .collection('messages')
+        .add({
+      'senderId': currentUserId, // Now uses your real Auth UID
+      'text': text.trim(),
+      'timestamp': FieldValue.serverTimestamp(),
+    });
+
+    await _firestore.collection('chats').doc(chatId).update({
+      'lastMessage': text.trim(),
+      'lastMessageTime': FieldValue.serverTimestamp(),
+    });
   }
 }

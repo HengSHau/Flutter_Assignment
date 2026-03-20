@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_assignment/features/auth/viewmodel/RegisterPage_viewmodels.dart'; 
+import 'package:flutter_assignment/features/auth/viewmodel/RegisterPage_viewmodels.dart';
+import 'package:flutter_assignment/features/chat/viewmodels/chatPage_viewmodel.dart';
+import 'package:flutter_assignment/features/customer/viewmodels/customer_discover_viewmodel.dart'; 
 import 'package:provider/provider.dart'; 
 import 'firebase_options.dart';
 import 'package:flutter_assignment/features/auth/viewmodel/LoginPage_viewmodels.dart'; 
 import 'package:flutter_assignment/features/auth/views/loginPage_view.dart';
+import 'package:flutter_assignment/features/chat/viewmodels/chat_home_viewmodel.dart';
 import 'package:flutter_assignment/core/theme/theme.dart';
 
 // 1. MUST BE ASYNC for Firebase
@@ -23,6 +26,10 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => LoginViewModel()),
         ChangeNotifierProvider(create: (_)=>RegisterViewModel()),
+        ChangeNotifierProvider(create: (_)=>CustomerDiscoverViewModel()),
+        ChangeNotifierProvider(create: (_)=>ChatHomeViewModel()),
+        ChangeNotifierProvider(create: (_) => ChatPageViewModel()),
+
       ],
       child: MyApp(),
     ),
