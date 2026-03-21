@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_assignment/core/widgets/commonAppbar.dart';
+import 'package:flutter_assignment/features/profile/viewmodels/editProfile_viewmodel.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_assignment/features/profile/models/user_profile_model.dart';
 
 class EditProfileView extends StatefulWidget {
   const EditProfileView({super.key,required this.themeNotifier,});
@@ -11,8 +14,48 @@ class EditProfileView extends StatefulWidget {
 }
 
 class _EditProfileViewState extends State<EditProfileView> {
+  late TextEditingController _usernameController;
+  late TextEditingController _emailController;
+  late TextEditingController _contactController;
+  late TextEditingController _passwordController;
+
+  String _selectedGender='Male';
+  bool _isInitialized=false;
+
+  @override
+  void initState(){
+    super.initState();
+    _usernameController=TextEditingController();
+    _emailController=TextEditingController();
+    _contactController=TextEditingController();
+    _passwordController=TextEditingController();
+  }
+
+  @override
+  void dispose(){
+    _usernameController.dispose();
+    _emailController.dispose();
+    _contactController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final viewModel=context.watch<EditprofileViewmodel>();
+
+    if(viewModel.isLoading){
+      return const Scaffold(body:Center(child:CircularProgressIndicator()));
+    }
+
+    if(!_isInitialized&&viewModel.userProfile!=null){
+      _usernameController.text=viewModel.userProfile!.username;
+      _emailController.text=viewModel.userProfile!.email;
+      _contactController.text = viewModel.userProfile!.contactNo;
+      _selectedGender = viewModel.userProfile!.gender;
+      _isInitialized = true;     
+    }
+
+
     return Scaffold(
       appBar: CommonAppBar(
         title: "Edit Profile", 
@@ -39,6 +82,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                 SizedBox(
                   width: 300,
                   child: TextField(
+                    controller:_usernameController,
                     decoration: InputDecoration(
                       enabledBorder: const OutlineInputBorder(),
                       focusedBorder: const OutlineInputBorder(),
@@ -51,6 +95,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                 SizedBox(
                   width: 300,
                   child: TextField(
+                    controller: _emailController,
                     decoration: InputDecoration(
                       enabledBorder: const OutlineInputBorder(),
                       focusedBorder: const OutlineInputBorder(),
@@ -63,6 +108,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                 SizedBox(
                   width: 300,
                   child: TextField(
+                    controller: _contactController,
                     decoration: InputDecoration(
                       enabledBorder: const OutlineInputBorder(),
                       focusedBorder: const OutlineInputBorder(),
@@ -76,7 +122,8 @@ class _EditProfileViewState extends State<EditProfileView> {
 
                 SizedBox(
                   width: 300,
-                  child: DropdownButtonFormField(
+                  child: DropdownButtonFormField<String>(
+                    value:_selectedGender,
                     decoration: InputDecoration(
                       labelText: 'Gender',
                       enabledBorder: OutlineInputBorder(),
@@ -90,6 +137,11 @@ class _EditProfileViewState extends State<EditProfileView> {
                       )
                    ],
                    onChanged: (value) {
+                    if(value!=null){
+                      setState(() {
+                        _selectedGender=value;
+                      });
+                    }
                    }, 
                   )
                 ),
@@ -98,6 +150,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                 SizedBox(
                   width: 300,
                   child: TextField(
+                    controller: _passwordController,
                     obscureText: true,
                     decoration: InputDecoration(
                       enabledBorder: const OutlineInputBorder(),
@@ -111,11 +164,28 @@ class _EditProfileViewState extends State<EditProfileView> {
                 Align(
                   alignment: Alignment.centerRight,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed:viewModel.isSaving?null: () async{
+                      final updatedProfile=UserProfileModel(
+                        username: _usernameController.text.trim(),
+                        email:_emailController.text.trim(),
+                        contactNo:_contactController.text.trim(),
+                        gender: _selectedGender,
+                      );
+
+                      bool success=await viewModel.saveProfile(updatedProfile);
+                      if(success&&mounted){
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Profile Updated Success!')),
+                        );
+                        Navigator.pop(context);
+                      }
+                    },
                     style: ElevatedButton.styleFrom(                      
                         minimumSize: const Size(100, 40)
                     ),
-                    child: const Text('Edit Profile'),
+                    child: viewModel.isSaving
+                      ? const SizedBox(width: 20,height:20,child: CircularProgressIndicator(strokeWidth: 2))
+                      : const Text('Save Profile'),
                   ),
                 )
               ],

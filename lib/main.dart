@@ -3,7 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_assignment/features/auth/viewmodel/RegisterPage_viewmodels.dart';
 import 'package:flutter_assignment/features/chat/viewmodels/chatPage_viewmodel.dart';
 import 'package:flutter_assignment/features/customer/viewmodels/customer_discover_viewmodel.dart';
-import 'package:flutter_assignment/features/homepage/viewmodels/homePage_viewmodel.dart'; 
+import 'package:flutter_assignment/features/homepage/viewmodels/homePage_viewmodel.dart';
+import 'package:flutter_assignment/features/profile/viewmodels/editProfile_viewmodel.dart'; 
 import 'package:provider/provider.dart'; 
 import 'firebase_options.dart';
 import 'package:flutter_assignment/features/auth/viewmodel/LoginPage_viewmodels.dart'; 
@@ -31,6 +32,7 @@ void main() async {
         ChangeNotifierProvider(create: (_)=>ChatHomeViewModel()),
         ChangeNotifierProvider(create: (_) => ChatPageViewModel()),
         ChangeNotifierProvider(create: (_) => HomepageViewmodel()),
+        ChangeNotifierProvider(create: (_) => EditprofileViewmodel()),
 
 
       ],
