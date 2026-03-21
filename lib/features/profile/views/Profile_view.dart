@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_assignment/core/widgets/commonAppbar.dart';
 import 'package:flutter_assignment/features/auth/views/loginPage_view.dart';
+import 'package:flutter_assignment/features/profile/views/editProfile_view.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key, required this.themeNotifier});
@@ -52,7 +53,14 @@ class ProfileState extends State<Profile> {
               const SizedBox(height: 50),
 
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => EditProfileView(themeNotifier: widget.themeNotifier,),
+                        )
+                      );
+                },
                 child: const Text('Edit Profile'),
               ),
 
