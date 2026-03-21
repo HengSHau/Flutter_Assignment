@@ -1,9 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_assignment/features/auth/viewmodel/RegisterPage_viewmodels.dart';
+import 'package:flutter_assignment/features/chat/viewmodels/chatPage_viewmodel.dart';
+import 'package:flutter_assignment/features/customer/viewmodels/customer_discover_viewmodel.dart'; 
+import 'package:provider/provider.dart'; 
+import 'firebase_options.dart';
+import 'package:flutter_assignment/features/auth/viewmodel/LoginPage_viewmodels.dart'; 
 import 'package:flutter_assignment/features/auth/views/loginPage_view.dart';
+import 'package:flutter_assignment/features/chat/viewmodels/chat_home_viewmodel.dart';
 import 'package:flutter_assignment/core/theme/theme.dart';
 
-void main() {
-  runApp(MyApp());
+// 1. MUST BE ASYNC for Firebase
+void main() async { 
+  // 2. Ensure Flutter bindings are ready
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // 3. Initialize Firebase using your auto-generated file
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  runApp(
+    // 4. Wrap MyApp with MultiProvider so the whole app can access the ViewModel
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => LoginViewModel()),
+        ChangeNotifierProvider(create: (_)=>RegisterViewModel()),
+        ChangeNotifierProvider(create: (_)=>CustomerDiscoverViewModel()),
+        ChangeNotifierProvider(create: (_)=>ChatHomeViewModel()),
+        ChangeNotifierProvider(create: (_) => ChatPageViewModel()),
+
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -23,7 +53,8 @@ class MyApp extends StatelessWidget {
           theme: themes.light(),
           darkTheme: themes.dark(),
           themeMode: currentMode,
-          home: LoginPage(themeNotifier: themeNotifier),
+          // Your LoginPage will now successfully find the LoginViewModel!
+          home: LoginPage(themeNotifier: themeNotifier), 
           debugShowCheckedModeBanner: false,
         );
       },

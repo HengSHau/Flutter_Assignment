@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class RecommendationCard extends StatelessWidget {
   final String username;
   final String price;
+  final VoidCallback onViewPressed;
 
   const RecommendationCard({
     super.key,
     required this.username,
     required this.price,
+    required this.onViewPressed,
   });
 
   @override
@@ -45,8 +47,9 @@ class RecommendationCard extends StatelessWidget {
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     border: Border.all(color: Theme.of(context).secondaryHeaderColor),
+                    borderRadius: BorderRadius.circular(4),
                   ),
-                  child: const Text('Details'),
+                  child: const Text('Course Details'),
                 ),
               ),
               const SizedBox(width: 12),

@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter_assignment/features/auth/viewmodel/RegisterPage_viewmodels.dart';
+import 'package:flutter_assignment/features/admin/viewmodels/admin_functionPage_viewmodel.dart';
 
-class RegisterPage extends StatelessWidget {
-  const RegisterPage({super.key});
+class AdminAddStaff extends StatefulWidget {
+  const AdminAddStaff({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final registerViewModel=context.watch<RegisterViewModel>();
+  State<AdminAddStaff> createState() => AdminAddStaffState();
+}
+
+class AdminAddStaffState extends State<AdminAddStaff> {
+  final AdminFunctionViewModel vm = AdminFunctionViewModel();
+
+   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: BackButton(),
-        title: const Text('Register'),
-      ),
       body: SingleChildScrollView(
         child: Center(
           child: Padding(
@@ -33,7 +33,6 @@ class RegisterPage extends StatelessWidget {
                 SizedBox(
                   width: 300,
                   child: TextField(
-                    onChanged: (value)=>registerViewModel.updateUsername(value),
                     decoration: InputDecoration(
                       enabledBorder: const OutlineInputBorder(),
                       focusedBorder: const OutlineInputBorder(),
@@ -46,7 +45,6 @@ class RegisterPage extends StatelessWidget {
                 SizedBox(
                   width: 300,
                   child: TextField(
-                    onChanged:(value)=>registerViewModel.updateEmail(value),
                     decoration: InputDecoration(
                       enabledBorder: const OutlineInputBorder(),
                       focusedBorder: const OutlineInputBorder(),
@@ -59,7 +57,6 @@ class RegisterPage extends StatelessWidget {
                 SizedBox(
                   width: 300,
                   child: TextField(
-                    onChanged: (value)=>registerViewModel.updateContactNo(value),
                     decoration: InputDecoration(
                       enabledBorder: const OutlineInputBorder(),
                       focusedBorder: const OutlineInputBorder(),
@@ -87,7 +84,6 @@ class RegisterPage extends StatelessWidget {
                       )
                    ],
                    onChanged: (value) {
-                    if(value!=null)registerViewModel.updateGender(value);
                    }, 
                   )
                 ),
@@ -97,7 +93,6 @@ class RegisterPage extends StatelessWidget {
                   width: 300,
                   child: TextField(
                     obscureText: true,
-                    onChanged: (value)=>registerViewModel.updatePassword(value),
                     decoration: InputDecoration(
                       enabledBorder: const OutlineInputBorder(),
                       focusedBorder: const OutlineInputBorder(),
@@ -107,34 +102,14 @@ class RegisterPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 30),
 
-                if(registerViewModel.errorMessage.isNotEmpty)...[
-                  const SizedBox(height: 10),
-                  Text(
-                    registerViewModel.errorMessage,
-                    style:const TextStyle(color:Colors.red,fontSize:12))
-                ], 
-
                 Align(
                   alignment: Alignment.centerRight,
                   child: ElevatedButton(
-                    onPressed: registerViewModel.isLoading
-                    ? null
-                    :()async{
-                      bool success=await context.read<RegisterViewModel>().register();
-
-                      if(success&&context.mounted){
-                        Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Registration Successful! Please Login.')),
-                        );
-                      }
-                    },
-                  style:ElevatedButton.styleFrom(
-                    minimumSize:const Size(100,40)
-                  ),
-                  child:registerViewModel.isLoading
-                    ? const SizedBox(width:15,height:15,child:CircularProgressIndicator(strokeWidth: 2))
-                    : const Text('Sign Up'),
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(                      
+                        minimumSize: const Size(100, 40)
+                    ),
+                    child: const Text('Add Staff'),
                   ),
                 )
               ],
