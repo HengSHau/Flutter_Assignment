@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_assignment/features/homepage/viewmodels/homePage_viewmodel.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+
+    final viewModel=context.watch<HomepageViewmodel>();
     return Scaffold(
       body: Center(
         child: Padding(
@@ -23,7 +27,7 @@ class HomePage extends StatelessWidget {
                 const SizedBox(height: 20),
                 
               Text(
-                'Hi XXX',
+                viewModel.isLoading?'Hi...':'Hi ${viewModel.userName}',
                 style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
@@ -39,12 +43,7 @@ class HomePage extends StatelessWidget {
             ]
           )
         )
-      )
-      
-      
-
-        
-      
+      )    
     );
   }
 }
