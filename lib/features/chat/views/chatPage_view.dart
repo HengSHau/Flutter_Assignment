@@ -7,12 +7,14 @@ class ChatPage extends StatefulWidget {
   final ValueNotifier<ThemeMode> themeNotifier;
   final String chatId; // CRITICAL: Tells the page which room we are in
   final String otherUserName; 
+  final String otherUserId;
 
   const ChatPage({
     super.key, 
     required this.themeNotifier, 
     required this.chatId, 
-    required this.otherUserName
+    required this.otherUserName,
+    required this.otherUserId,
   });
 
   @override
@@ -21,6 +23,14 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   final TextEditingController _messageController = TextEditingController();
+
+  @override
+  void initState(){
+    super.initState();
+    Future.microtask((){
+      context.read<ChatPageViewModel>().markAsRead(widget.chatId);
+    });
+  }
 
   @override
   void dispose() {
@@ -46,10 +56,7 @@ class _ChatPageState extends State<ChatPage> {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                
-                if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text('Say hello! 👋'));
-                }
+              
 
                 final messages = snapshot.data!;
 
@@ -102,7 +109,7 @@ class _ChatPageState extends State<ChatPage> {
                   icon: const Icon(Icons.send, color: Colors.blue),
                   onPressed: () {
                     if (_messageController.text.isNotEmpty) {
-                      viewModel.sendMessage(widget.chatId, _messageController.text);
+                      viewModel.sendMessage(widget.chatId, widget.otherUserId,_messageController.text);
                       _messageController.clear();
                     }
                   },

@@ -84,7 +84,12 @@ class ChatHomePageState extends State<ChatHomePage> {
                         ],
                       ),
                       // 1. Username stays the same
-                      title: Text(chat.otherUserName), 
+                      title: Text(
+                        chat.otherUserName,
+                        style:TextStyle(
+                          fontWeight: isUnread? FontWeight.bold:FontWeight.normal,
+                        ),
+                      ), 
                       // 2. BOLD SUBTITLE if unread
                       subtitle: Text(
                         chat.lastMessage,
@@ -112,6 +117,7 @@ class ChatHomePageState extends State<ChatHomePage> {
                               themeNotifier: widget.themeNotifier,
                               chatId: chat.chatId,
                               otherUserName: chat.otherUserName,
+                              otherUserId: chat.otherUserId,
                             ),
                           ),
                         );
@@ -196,6 +202,7 @@ class ChatHomePageState extends State<ChatHomePage> {
                                     themeNotifier: widget.themeNotifier,
                                     chatId: newChatId,
                                     otherUserName: name,
+                                    otherUserId: otherUserId,
                                   ),
                                 ),
                               );

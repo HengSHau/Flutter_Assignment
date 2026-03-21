@@ -22,7 +22,13 @@ class ChatPageViewModel extends ChangeNotifier {
     });
   }
 
-  Future<void> sendMessage(String chatId, String text) async {
+  Future<void> markAsRead(String chatId) async{
+    await _firestore.collection('chats').doc(chatId).update({
+      'unreadCount.$currentUserId':0,
+    });
+  }
+
+  Future<void> sendMessage(String chatId,String otherUserId, String text) async {
     if (text.trim().isEmpty) return;
 
     await _firestore
@@ -38,6 +44,7 @@ class ChatPageViewModel extends ChangeNotifier {
     await _firestore.collection('chats').doc(chatId).update({
       'lastMessage': text.trim(),
       'lastMessageTime': FieldValue.serverTimestamp(),
+      'unreadCount.$otherUserId':FieldValue.increment(1),
     });
   }
 }
