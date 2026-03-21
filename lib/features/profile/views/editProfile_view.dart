@@ -1,25 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_assignment/features/admin/viewmodels/admin_functionPage_viewmodel.dart';
+import 'package:flutter_assignment/core/widgets/commonAppbar.dart';
 
-class AdminAddStaff extends StatefulWidget {
-  const AdminAddStaff({super.key});
+class EditProfileView extends StatefulWidget {
+  const EditProfileView({super.key,required this.themeNotifier,});
+  final ValueNotifier<ThemeMode> themeNotifier;
+  
 
   @override
-  State<AdminAddStaff> createState() => AdminAddStaffState();
+  State<EditProfileView> createState() => _EditProfileViewState();
 }
 
-class AdminAddStaffState extends State<AdminAddStaff> {
-  final AdminFunctionViewModel vm = AdminFunctionViewModel();
-
-   Widget build(BuildContext context) {
+class _EditProfileViewState extends State<EditProfileView> {
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
+      appBar: CommonAppBar(
+        title: "Edit Profile", 
+        showBack: true,
+        showProfile: false,
+        themeNotifier: widget.themeNotifier
+      ),
       body: SingleChildScrollView(
         child: Center(
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [ 
+              children: [
                 SizedBox(
                   width: 200,
                   child: Image.asset(
@@ -89,6 +95,19 @@ class AdminAddStaffState extends State<AdminAddStaff> {
                 ),
                 const SizedBox(height: 24),
 
+                SizedBox(
+                  width: 300,
+                  child: TextField(
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      enabledBorder: const OutlineInputBorder(),
+                      focusedBorder: const OutlineInputBorder(),
+                      labelText: 'Password',
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 30),
+
                 Align(
                   alignment: Alignment.centerRight,
                   child: ElevatedButton(
@@ -96,14 +115,14 @@ class AdminAddStaffState extends State<AdminAddStaff> {
                     style: ElevatedButton.styleFrom(                      
                         minimumSize: const Size(100, 40)
                     ),
-                    child: const Text('Add Staff'),
+                    child: const Text('Edit Profile'),
                   ),
                 )
               ],
             ),
           ),
         ),
-      )
+      ),
     );
   }
 }
