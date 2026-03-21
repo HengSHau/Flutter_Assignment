@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart'; // 1. ADDED PROVIDER IMPORT
 import 'package:flutter_assignment/core/widgets/commonAppbar.dart';
 import 'package:flutter_assignment/features/auth/viewmodel/LoginPage_viewmodels.dart';
-import 'package:flutter_assignment/features/homepage/viewmodels/homePage_viewmodel.dart';
+import 'package:flutter_assignment/features/homepage/views/main_layout_view.dart';
 import 'package:flutter_assignment/features/auth/views/RegisterPage_view.dart';
 
 class LoginPage extends StatelessWidget {
