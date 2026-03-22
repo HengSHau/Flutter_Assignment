@@ -35,24 +35,12 @@ class _DiscoverViewState extends State<DiscoverView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 1. Search Bar
-            TextField(
-              decoration: InputDecoration(
-                hintText: 'Search for a language or skill...',
-                prefixIcon: const Icon(Icons.search),
-                filled: true,
-                fillColor: Theme.of(context).brightness == Brightness.light 
-                    ? Colors.grey.shade200 
-                    : Colors.grey.shade800,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide.none,
-                ),
-              ),
+            // 1. Category Filters (Now the main focus)
+            const Text(
+              'Categories',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 20),
-
-            // 2. Category Filters
+            const SizedBox(height: 10),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -74,7 +62,7 @@ class _DiscoverViewState extends State<DiscoverView> {
                 }).toList(),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 25),
 
             const Text(
               'Available 1-to-1 Slots',
@@ -88,7 +76,7 @@ class _DiscoverViewState extends State<DiscoverView> {
               : viewModel.filteredCourses.isEmpty
                 ? Center(
                     child: Text(
-                      'No available slots for $_selectedCategory right now.',
+                      'No upcoming slots for $_selectedCategory right now.',
                       style: const TextStyle(color: Colors.grey),
                     ),
                   )
@@ -96,7 +84,6 @@ class _DiscoverViewState extends State<DiscoverView> {
                     itemCount: viewModel.filteredCourses.length,
                     itemBuilder: (context, index) {
                       final course = viewModel.filteredCourses[index];
-                      // PASS the viewModel to the card so it can handle booking
                       return _buildCourseCard(context, course, viewModel);
                     },
                   ),
@@ -183,10 +170,6 @@ class _DiscoverViewState extends State<DiscoverView> {
                       ScaffoldMessenger.of(context).hideCurrentSnackBar();
                       
                       if (result == "Success") {
-                        // ✨ NOTE: We removed the manual "fetch" call here.
-                        // Because CustomerLearningViewModel is now a Stream, 
-                        // it will detect the new booking in Firebase automatically!
-
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text("Successfully booked! See you on $formattedDate."),
