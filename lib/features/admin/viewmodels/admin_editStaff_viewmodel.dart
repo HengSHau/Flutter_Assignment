@@ -7,6 +7,7 @@ class AdminEditStaffViewModel extends ChangeNotifier {
   final TextEditingController contactNoController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  String? selectedRole;
   String? selectedGender;
   int? selectedIndex;
 
@@ -14,6 +15,7 @@ class AdminEditStaffViewModel extends ChangeNotifier {
     StaffModel(
       username: 'Alice',
       gmail: 'alice@gmail.com',
+      role: 'Finance',
       contactNo: '0123456789',
       gender: 'Female',
       password: '123456',
@@ -21,6 +23,7 @@ class AdminEditStaffViewModel extends ChangeNotifier {
     StaffModel(
       username: 'Ben',
       gmail: 'ben@gmail.com',
+      role: 'Admin',
       contactNo: '0112233445',
       gender: 'Male',
       password: 'abcdef',
@@ -28,6 +31,7 @@ class AdminEditStaffViewModel extends ChangeNotifier {
     StaffModel(
       username: 'Chris',
       gmail: 'chris@gmail.com',
+      role: 'Finance',
       contactNo: '0199988877',
       gender: 'Male',
       password: 'qwerty',
@@ -40,6 +44,7 @@ class AdminEditStaffViewModel extends ChangeNotifier {
 
     usernameController.text = staff.username;
     gmailController.text = staff.gmail;
+    selectedRole = staff.role;
     contactNoController.text = staff.contactNo;
     passwordController.text = staff.password;
     selectedGender = staff.gender;
@@ -53,6 +58,7 @@ class AdminEditStaffViewModel extends ChangeNotifier {
     staffList[selectedIndex!] = staffList[selectedIndex!].copyWith(
       username: usernameController.text,
       gmail: gmailController.text,
+      role: selectedRole,
       contactNo: contactNoController.text,
       gender: selectedGender,
       password: passwordController.text,
@@ -63,6 +69,11 @@ class AdminEditStaffViewModel extends ChangeNotifier {
 
   void changeGender(String? value) {
     selectedGender = value;
+    notifyListeners();
+  }
+
+  void changeRole(String? value){
+    selectedRole = value;
     notifyListeners();
   }
 

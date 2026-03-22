@@ -96,6 +96,30 @@ class _AdminEditStaffState extends State<AdminEditStaff> {
 
                 SizedBox(
                   width: 300,
+                  child: DropdownButtonFormField<String>(
+                    initialValue: vm.selectedRole,
+                    decoration: const InputDecoration(
+                      labelText: 'Role',
+                      enabledBorder: OutlineInputBorder(),
+                      focusedBorder: OutlineInputBorder(),
+                    ),
+                    items: const [
+                      DropdownMenuItem(
+                        value: 'Admin',
+                        child: Text('Admin'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'Finance',
+                        child: Text('Finance'),
+                      ),
+                    ],
+                    onChanged: vm.changeRole,
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                SizedBox(
+                  width: 300,
                   child: TextField(
                     controller: vm.contactNoController,
                     decoration: const InputDecoration(

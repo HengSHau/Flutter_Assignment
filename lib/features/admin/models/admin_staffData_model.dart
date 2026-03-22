@@ -1,6 +1,7 @@
 class StaffModel {
   final String username;
   final String gmail;
+  final String role;
   final String contactNo;
   final String gender;
   final String password;
@@ -8,6 +9,7 @@ class StaffModel {
   StaffModel({
     required this.username,
     required this.gmail,
+    required this.role,
     required this.contactNo,
     required this.gender,
     required this.password,
@@ -16,6 +18,7 @@ class StaffModel {
   StaffModel copyWith({
     String? username,
     String? gmail,
+    String? role,
     String? contactNo,
     String? gender,
     String? password,
@@ -23,6 +26,7 @@ class StaffModel {
     return StaffModel(
       username: username ?? this.username,
       gmail: gmail ?? this.gmail,
+      role: role ?? this.role,
       contactNo: contactNo ?? this.contactNo,
       gender: gender ?? this.gender,
       password: password ?? this.password,

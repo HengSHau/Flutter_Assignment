@@ -35,31 +35,16 @@ class ProfileState extends State<Profile> {
                 ),    
               ),
 
-              ElevatedButton.icon(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.edit,
-                  size: 16,
-                ),             
-                label: const Text(
-                  'Change Profile Picture',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-
               const SizedBox(height: 50),
 
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => EditProfileView(themeNotifier: widget.themeNotifier,),
-                        )
-                      );
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => EditProfileView(themeNotifier: widget.themeNotifier,),
+                    )
+                  );
                 },
                 child: const Text('Edit Profile'),
               ),

@@ -36,7 +36,7 @@ class AdminAddStaffState extends State<AdminAddStaff> {
                     decoration: InputDecoration(
                       enabledBorder: const OutlineInputBorder(),
                       focusedBorder: const OutlineInputBorder(),
-                      labelText: 'Username',
+                      labelText: 'Staff Name',
                     ),
                   ),
                 ),
@@ -50,6 +50,30 @@ class AdminAddStaffState extends State<AdminAddStaff> {
                       focusedBorder: const OutlineInputBorder(),
                       labelText: 'Gmail',
                     ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                SizedBox(
+                  width: 300,
+                  child: DropdownButtonFormField<String>(
+                    initialValue: vm.selectedRole,
+                    decoration: const InputDecoration(
+                      labelText: 'Role',
+                      enabledBorder: OutlineInputBorder(),
+                      focusedBorder: OutlineInputBorder(),
+                    ),
+                    items: const [
+                      DropdownMenuItem(
+                        value: 'Admin',
+                        child: Text('Admin'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'Finance',
+                        child: Text('Finance'),
+                      ),
+                    ],
+                    onChanged: vm.changeRole,
                   ),
                 ),
                 const SizedBox(height: 24),
