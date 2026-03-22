@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_assignment/features/auth/viewmodel/RegisterPage_viewmodels.dart';
 import 'package:flutter_assignment/features/chat/viewmodels/chatPage_viewmodel.dart';
+import 'package:flutter_assignment/features/customer/viewmodels/customer_create_course_viewmodel.dart';
 import 'package:flutter_assignment/features/customer/viewmodels/customer_discover_viewmodel.dart';
 import 'package:flutter_assignment/features/homepage/viewmodels/homePage_viewmodel.dart';
 import 'package:flutter_assignment/features/profile/viewmodels/editProfile_viewmodel.dart'; 
@@ -11,6 +12,8 @@ import 'package:flutter_assignment/features/auth/viewmodel/LoginPage_viewmodels.
 import 'package:flutter_assignment/features/auth/views/loginPage_view.dart';
 import 'package:flutter_assignment/features/chat/viewmodels/chat_home_viewmodel.dart';
 import 'package:flutter_assignment/core/theme/theme.dart';
+import 'package:flutter_assignment/features/customer/viewmodels/customer_learning_viewmodel.dart';
+import 'package:flutter_assignment/features/customer/viewmodels/customer_teaching_viewmodel.dart';
 
 // 1. MUST BE ASYNC for Firebase
 void main() async { 
@@ -33,6 +36,9 @@ void main() async {
         ChangeNotifierProvider(create: (_) => ChatPageViewModel()),
         ChangeNotifierProvider(create: (_) => HomepageViewmodel()),
         ChangeNotifierProvider(create: (_) => EditprofileViewmodel()),
+        ChangeNotifierProvider(create: (_) => CustomerCreateCourseViewmodel()),
+        ChangeNotifierProvider(create: (_) => CustomerLearningViewModel()),
+        ChangeNotifierProvider(create: (_) => CustomerTeachingViewmodel()),
 
 
       ],
