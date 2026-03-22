@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:flutter_assignment/core/widgets/commonAppbar.dart';
 import 'package:flutter_assignment/features/customer/viewmodels/customer_discover_viewmodel.dart'; 
 import 'package:flutter_assignment/features/customer/models/course_model.dart';
-import 'package:flutter_assignment/features/customer/viewmodels/customer_learning_viewmodel.dart';
 import 'package:intl/intl.dart';
 
 class DiscoverView extends StatefulWidget {

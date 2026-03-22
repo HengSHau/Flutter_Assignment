@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_assignment/core/widgets/commonAppbar.dart';
 import 'package:flutter_assignment/features/auth/views/loginPage_view.dart';
 import 'package:flutter_assignment/features/profile/views/editProfile_view.dart';
-import 'package:flutter_assignment/core/theme/theme.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key, required this.themeNotifier});
