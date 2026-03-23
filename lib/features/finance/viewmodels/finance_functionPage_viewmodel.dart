@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class FinanceFunctionViewModel {
   final List<String> tabs = [
     'Daily',
-    'Monthly',
+    'Average',
     'Yearly'
   ];
 

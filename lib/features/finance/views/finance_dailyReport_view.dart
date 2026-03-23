@@ -1,15 +1,16 @@
-import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter_assignment/features/finance/viewmodels/finance_dailyReport_viewmodel.dart';
+import 'package:flutter/material.dart';
+import '../models/finance_reportData_model.dart';
+import '../viewmodels/finance_dailyReport_viewmodel.dart';
 
-class FinanceDailyView extends StatefulWidget {
-  const FinanceDailyView({super.key});
+class FinanceDailyPage extends StatefulWidget {
+  const FinanceDailyPage({super.key});
 
   @override
-  State<FinanceDailyView> createState() => FinanceDailyViewState();
+  State<FinanceDailyPage> createState() => _FinanceDailyPageState();
 }
 
-class FinanceDailyViewState extends State<FinanceDailyView> {
+class _FinanceDailyPageState extends State<FinanceDailyPage> {
   final vm = FinanceDailyViewModel();
 
   @override
@@ -18,14 +19,14 @@ class FinanceDailyViewState extends State<FinanceDailyView> {
     vm.addListener(_refresh);
   }
 
+  void _refresh() {
+    setState(() {});
+  }
+
   @override
   void dispose() {
     vm.removeListener(_refresh);
     super.dispose();
-  }
-
-  void _refresh() {
-    setState(() {});
   }
 
   @override
@@ -35,33 +36,75 @@ class FinanceDailyViewState extends State<FinanceDailyView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          OutlinedButton(
-            onPressed: () => vm.pickDateRange(context),
-            child: const Text('Select Date Range'),
-          ),
-
-          const SizedBox(height: 12),
-
-          Text(
-            vm.rangeText,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
+          const Text(
+            'Daily Report',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
             ),
+          ),
+          const SizedBox(height: 16),
+
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () => vm.pickFromDate(context),
+                  child: Text('From: ${vm.formatDate(vm.fromDate)}'),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () => vm.pickToDate(context),
+                  child: Text('To: ${vm.formatDate(vm.toDate)}'),
+                ),
+              ),
+            ],
           ),
 
           const SizedBox(height: 20),
-          
+
           Expanded(
-            child: vm.chartData.isEmpty
-                ? const Center(
+            child: StreamBuilder<List<FinanceReportData>>(
+              stream: vm.getDailyCategoryData(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text('Error: ${snapshot.error}'),
+                  );
+                }
+
+                final chartData = snapshot.data ?? [];
+
+                if (chartData.isEmpty) {
+                  return const Center(
                     child: Text('No data available'),
-                  )
-                : BarChart(
-                    BarChartData(
-                      maxY: 200,
-                      borderData: FlBorderData(show: false),
+                  );
+                }
+
+                return Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black12),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: LineChart(
+                    LineChartData(
+                      minX: 0,
+                      maxX: chartData.length.toDouble() - 1,
+                      minY: 0,
+                      maxY: vm.getMaxY(chartData),
+
                       gridData: FlGridData(show: true),
+                      borderData: FlBorderData(show: false),
+
                       titlesData: FlTitlesData(
                         topTitles: const AxisTitles(
                           sideTitles: SideTitles(showTitles: false),
@@ -69,21 +112,27 @@ class FinanceDailyViewState extends State<FinanceDailyView> {
                         rightTitles: const AxisTitles(
                           sideTitles: SideTitles(showTitles: false),
                         ),
+
+                        // Y轴
                         leftTitles: AxisTitles(
                           sideTitles: SideTitles(showTitles: true),
                         ),
+
+                        // X轴（category）
                         bottomTitles: AxisTitles(
                           sideTitles: SideTitles(
                             showTitles: true,
+                            interval: 1,
                             getTitlesWidget: (value, meta) {
                               final index = value.toInt();
-                              if (index < 0 || index >= vm.chartData.length) {
+                              if (index < 0 || index >= chartData.length) {
                                 return const SizedBox.shrink();
                               }
+
                               return Padding(
                                 padding: const EdgeInsets.only(top: 8),
                                 child: Text(
-                                  vm.chartData[index].label,
+                                  chartData[index].label, // 👈 category
                                   style: const TextStyle(fontSize: 10),
                                 ),
                               );
@@ -91,21 +140,25 @@ class FinanceDailyViewState extends State<FinanceDailyView> {
                           ),
                         ),
                       ),
-                      barGroups: List.generate(
-                        vm.chartData.length,
-                        (index) => BarChartGroupData(
-                          x: index,
-                          barRods: [
-                            BarChartRodData(
-                              toY: vm.chartData[index].value,
-                              width: 18,
-                              borderRadius: BorderRadius.circular(4),
+
+                      lineBarsData: [
+                        LineChartBarData(
+                          spots: List.generate(
+                            chartData.length,
+                            (index) => FlSpot(
+                              index.toDouble(),
+                              chartData[index].value,
                             ),
-                          ],
+                          ),
+
+                           // 每个点                          
                         ),
-                      ),
+                      ],
                     ),
-                  ),
+                  )
+                );
+              },
+            ),
           ),
         ],
       ),
