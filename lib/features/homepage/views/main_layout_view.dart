@@ -64,7 +64,7 @@ class HomeState extends State<Home> {
     }else if(_userRole=='finance'){
       return const FinanceFunctionPage();
     }else{
-      return const CustomerFunctionPage();
+      return CustomerFunctionPage(themeNotifier: widget.themeNotifier);
     }
   }
 

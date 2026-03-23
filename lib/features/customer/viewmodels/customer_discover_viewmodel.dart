@@ -1,76 +1,113 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_assignment/features/customer/models/tutor_couce_model.dart' show TutorCourseModel;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_assignment/features/customer/models/course_model.dart';
 
 class CustomerDiscoverViewModel extends ChangeNotifier {
-  // 1. The full list of courses (Simulating data from Firebase for now)
-  final List<TutorCourseModel> _allCourses = [
-    TutorCourseModel(courseId: '1', tutorUid: 'u1', tutorName: 'Ah Huat', category: 'Java', price: 670.0),
-    TutorCourseModel(courseId: '2', tutorUid: 'u2', tutorName: 'Uncle Roger', category: 'Python', price: 999.0),
-    TutorCourseModel(courseId: '3', tutorUid: 'u3', tutorName: '秦始皇', category: 'C++', price: 50.0),
-    TutorCourseModel(courseId: '4', tutorUid: 'u4', tutorName: 'Ali', category: 'Java', price: 150.0),
-  ];
+  bool _isLoading = true;
+  List<CourseModel> _allCourses = [];
+  List<CourseModel> _filteredCourses = [];
+  String _currentCategory = 'All'; 
 
-  // 2. State variables for the UI
-  List<TutorCourseModel> _displayedCourses = [];
-  String _searchQuery = '';
-  String _selectedCategory = 'Category';
-  String _selectedPriceSort = 'Price';
+  StreamSubscription? _coursesSubscription;
 
-  // Getters for the UI to read
-  List<TutorCourseModel> get displayedCourses => _displayedCourses;
-  String get selectedCategory => _selectedCategory;
-  String get selectedPriceSort => _selectedPriceSort;
+  bool get isLoading => _isLoading;
+  List<CourseModel> get filteredCourses => _filteredCourses;
 
   CustomerDiscoverViewModel() {
-    // When the page loads, show all courses initially
-    _displayedCourses = List.from(_allCourses);
+    _startListeningToCourses();
   }
 
-  // --- UPDATE METHODS ---
-
-  void updateSearchQuery(String query) {
-    _searchQuery = query.toLowerCase();
-    _applyFilters();
-  }
-
-  void updateCategory(String category) {
-    _selectedCategory = category;
-    _applyFilters();
-  }
-
-  void updatePriceSort(String sortType) {
-    _selectedPriceSort = sortType;
-    _applyFilters();
-  }
-
-  // --- FILTERING LOGIC ---
-  
-  void _applyFilters() {
-    // Start with all courses
-    List<TutorCourseModel> filtered = List.from(_allCourses);
-
-    // 1. Filter by Search Query (Tutor Name or Category)
-    if (_searchQuery.isNotEmpty) {
-      filtered = filtered.where((course) {
-        return course.tutorName.toLowerCase().contains(_searchQuery) ||
-               course.category.toLowerCase().contains(_searchQuery);
-      }).toList();
-    }
-
-    // 2. Filter by Category Dropdown
-    if (_selectedCategory != 'Category' && _selectedCategory != 'All Categories') {
-      filtered = filtered.where((course) => course.category == _selectedCategory).toList();
-    }
-
-    // 3. Sort by Price Dropdown
-    if (_selectedPriceSort == 'Low') {
-      filtered.sort((a, b) => a.price.compareTo(b.price));
-    } else if (_selectedPriceSort == 'High') {
-      filtered.sort((a, b) => b.price.compareTo(a.price));
-    }
-
-    // Update the UI
-    _displayedCourses = filtered;
+  void _startListeningToCourses() {
+    _isLoading = true;
     notifyListeners();
+
+    _coursesSubscription?.cancel();
+
+    _coursesSubscription = FirebaseFirestore.instance
+        .collection('courses')
+        .where('isBooked', isEqualTo: false)
+        // ✨ Hides courses scheduled before right now
+        .where('scheduledTime', isGreaterThanOrEqualTo: Timestamp.now())
+        .snapshots() 
+        .listen((snapshot) {
+      
+      _allCourses = snapshot.docs.map((doc) {
+        return CourseModel.fromMap(doc.id, doc.data() as Map<String, dynamic>);
+      }).toList();
+
+      _applyFilter();
+      _isLoading = false;
+      notifyListeners();
+    }, onError: (error) {
+      print('Stream Error: $error');
+      _isLoading = false;
+      notifyListeners();
+    });
+  }
+
+  void filterByCategory(String category) {
+    _currentCategory = category;
+    _applyFilter();
+    notifyListeners();
+  }
+
+  void _applyFilter() {
+    if (_currentCategory == 'All') {
+      _filteredCourses = List.from(_allCourses);
+    } else {
+      _filteredCourses = _allCourses
+          .where((course) => course.category == _currentCategory)
+          .toList();
+    }
+  }
+
+  Future<String> bookCourse(CourseModel course) async {
+    try {
+      String studentId = FirebaseAuth.instance.currentUser?.uid ?? '';
+      if (studentId.isEmpty) return "Error: Not Logged in.";
+      if (studentId == course.tutorId) return 'You cannot book your own Class!';
+
+      QuerySnapshot userBookings = await FirebaseFirestore.instance
+          .collection('bookings')
+          .where('studentId', isEqualTo: studentId)
+          .get();
+
+      for (var doc in userBookings.docs) {
+        if (doc['scheduledTime'] != null) {
+          DateTime existingClassTime = (doc['scheduledTime'] as Timestamp).toDate();
+          if (existingClassTime.isAtSameMomentAs(course.scheduledTime)) {
+            return "Schedule Clash! You already have a class at this time.";
+          }
+        }
+      }
+
+      await FirebaseFirestore.instance.collection('bookings').add({
+        'courseId': course.id,
+        'courseTitle': course.title,
+        'studentId': studentId,
+        'tutorId': course.tutorId,
+        'scheduledTime': Timestamp.fromDate(course.scheduledTime),
+        'meetLink': course.meetLink,
+        'timeStamp': FieldValue.serverTimestamp(),
+      });
+
+      await FirebaseFirestore.instance
+          .collection('courses')
+          .doc(course.id)
+          .update({'isBooked': true});
+
+      return 'Success';
+    } catch (e) {
+      print('Booking Error $e');
+      return "An Error Occurred while Booking.";
+    }
+  }
+
+  @override
+  void dispose() {
+    _coursesSubscription?.cancel();
+    super.dispose();
   }
 }

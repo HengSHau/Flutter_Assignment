@@ -10,7 +10,15 @@ class HomepageViewmodel extends ChangeNotifier{
   bool get isLoading=>_isLoading;
 
   HomepageViewmodel(){
-    _fetchUserName();
+    FirebaseAuth.instance.authStateChanges().listen((User?user){
+      if(user==null){
+        _userName="";
+        _isLoading=false;
+        notifyListeners();
+      }else{
+        _fetchUserName();
+      }
+    });
   }
 
   Future<void>_fetchUserName()async{
