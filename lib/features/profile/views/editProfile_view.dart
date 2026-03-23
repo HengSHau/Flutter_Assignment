@@ -9,7 +9,6 @@ class EditProfileView extends StatefulWidget {
   const EditProfileView({super.key,required this.themeNotifier,});
   final ValueNotifier<ThemeMode> themeNotifier;
   
-
   @override
   State<EditProfileView> createState() => _EditProfileViewState();
 }
@@ -28,6 +27,16 @@ class _EditProfileViewState extends State<EditProfileView> {
     _usernameController=TextEditingController();
     _emailController=TextEditingController();
     _contactController=TextEditingController();
+
+    // ✨ THE FIX: Force the ViewModel to fetch fresh data when this page opens
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // NOTE: Change 'loadProfile()' to the actual function name inside your EditprofileViewmodel!
+      context.read<EditprofileViewmodel>().loadUserProfile(); 
+      
+      setState(() {
+        _isInitialized = false; 
+      });
+    });
   }
 
   @override
@@ -53,7 +62,6 @@ class _EditProfileViewState extends State<EditProfileView> {
       _selectedGender = viewModel.userProfile!.gender;
       _isInitialized = true;     
     }
-
 
     return Scaffold(
       appBar: CommonAppBar(
@@ -82,9 +90,9 @@ class _EditProfileViewState extends State<EditProfileView> {
                   width: 300,
                   child: TextField(
                     controller:_usernameController,
-                    decoration: InputDecoration(
-                      enabledBorder: const OutlineInputBorder(),
-                      focusedBorder: const OutlineInputBorder(),
+                    decoration: const InputDecoration(
+                      enabledBorder: OutlineInputBorder(),
+                      focusedBorder: OutlineInputBorder(),
                       labelText: 'Username',
                     ),
                   ),
@@ -95,9 +103,9 @@ class _EditProfileViewState extends State<EditProfileView> {
                   width: 300,
                   child: TextField(
                     controller: _emailController,
-                    decoration: InputDecoration(
-                      enabledBorder: const OutlineInputBorder(),
-                      focusedBorder: const OutlineInputBorder(),
+                    decoration: const InputDecoration(
+                      enabledBorder: OutlineInputBorder(),
+                      focusedBorder: OutlineInputBorder(),
                       labelText: 'Gmail',
                     ),
                   ),
@@ -108,12 +116,10 @@ class _EditProfileViewState extends State<EditProfileView> {
                   width: 300,
                   child: TextField(
                     controller: _contactController,
-                    decoration: InputDecoration(
-                      enabledBorder: const OutlineInputBorder(),
-                      focusedBorder: const OutlineInputBorder(),
+                    decoration: const InputDecoration(
+                      enabledBorder: OutlineInputBorder(),
+                      focusedBorder: OutlineInputBorder(),
                       labelText: 'Contact No.',
-                      labelStyle: TextStyle(
-                      )
                     ),
                   ),
                 ),
@@ -123,17 +129,15 @@ class _EditProfileViewState extends State<EditProfileView> {
                   width: 300,
                   child: DropdownButtonFormField<String>(
                     value:_selectedGender,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Gender',
                       enabledBorder: OutlineInputBorder(),
                       focusedBorder: OutlineInputBorder(), 
                     ),
                     isExpanded: true,
-                    items:[
-                      DropdownMenuItem(value: 'Male', child: Text('Male')
-                      ),
-                      DropdownMenuItem( value: 'Female', child: Text('Female')
-                      )
+                    items: const [
+                      DropdownMenuItem(value: 'Male', child: Text('Male')),
+                      DropdownMenuItem(value: 'Female', child: Text('Female'))
                    ],
                    onChanged: (value) {
                     if(value!=null){
