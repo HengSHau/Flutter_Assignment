@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_assignment/core/widgets/commonAppbar.dart';
 import 'package:flutter_assignment/features/auth/views/loginPage_view.dart';
@@ -54,14 +55,22 @@ class ProfileState extends State<Profile> {
               Align(
                 alignment: Alignment.bottomRight,
                 child:ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => LoginPage(themeNotifier: widget.themeNotifier),
-                      ),
-                      (route) => false,
-                    );
+                  onPressed: () async {
+                    try{
+                      await FirebaseAuth.instance.signOut();
+                      if(context.mounted){
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (context)=>LoginPage(themeNotifier: widget.themeNotifier,)),
+                          (Route<dynamic>route)=>false,
+                        );
+                      }
+                    }catch(e){
+                      print('Error loging out: $e');
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Failded to logout, Try Again.')),
+                      );
+                    }
+                    
                   },
                   child: const Text('Logout'),
                 )

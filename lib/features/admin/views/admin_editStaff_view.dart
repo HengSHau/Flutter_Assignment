@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_assignment/features/admin/viewmodels/admin_editStaff_viewmodel.dart';
 
 class AdminEditStaff extends StatefulWidget {
@@ -44,28 +46,54 @@ class _AdminEditStaffState extends State<AdminEditStaff> {
                     border: Border.all(color: Colors.black),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: ListView.separated(
-                    itemCount: vm.staffList.length,
-                    separatorBuilder: (context, index) =>
-                        const Divider(height: 1),
-                    itemBuilder: (context, index) {
-                      final staff = vm.staffList[index];
-                      final isSelected = vm.selectedIndex == index;
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance.collection('users').where('role',isNotEqualTo: 'Learner').snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
 
-                      return ListTile(
-                        tileColor:
-                            isSelected ? Colors.grey.shade300 : Colors.white,
-                        title: Text(staff.username),
-                        subtitle: Text(staff.gmail),
-                        trailing: Text(staff.gender),
-                        onTap: () {
-                          vm.selectStaff(index);
+                      if (snapshot.hasError) {
+                        return const Center(child: Text('Error loading staff'));
+                      }
+
+                      final alldocs = snapshot.data?.docs ?? [];
+
+                      final currentUserId=FirebaseAuth.instance.currentUser?.uid;
+
+                      final docs=alldocs.where((doc){
+                        final data=doc.data()as Map<String,dynamic>;
+                        bool isNotSuperAdmin=data['username']!='Super Admin';
+                        bool isNotMyself=doc.id!=currentUserId;
+                        return isNotMyself&&isNotSuperAdmin;
+                      }).toList();
+
+                      if (docs.isEmpty) {
+                        return const Center(child: Text('No staff found'));
+                      }
+
+                      return ListView.separated(
+                        itemCount: docs.length,
+                        separatorBuilder: (context, index) => const Divider(height: 1),
+                        itemBuilder: (context, index) {
+                          final doc = docs[index];
+                          final data = doc.data() as Map<String, dynamic>;
+                          final isSelected = vm.selectedDocId == doc.id;
+
+                          return ListTile(
+                            tileColor: isSelected ? Colors.grey.shade300 : Colors.white,
+                            title: Text(data['username'] ?? ''),
+                            subtitle: Text(data['email'] ?? ''),
+                            trailing: Text(data['gender'] ?? ''),
+                            onTap: () {
+                              vm.selectStaff(doc);
+                            },
+                          );
                         },
                       );
                     },
                   ),
                 ),
-
                 const SizedBox(height: 24),
 
                 SizedBox(
@@ -84,11 +112,11 @@ class _AdminEditStaffState extends State<AdminEditStaff> {
                 SizedBox(
                   width: 300,
                   child: TextField(
-                    controller: vm.gmailController,
+                    controller: vm.emailController,
                     decoration: const InputDecoration(
                       enabledBorder: OutlineInputBorder(),
                       focusedBorder: OutlineInputBorder(),
-                      labelText: 'Gmail',
+                      labelText: 'Email',
                     ),
                   ),
                 ),
@@ -156,36 +184,96 @@ class _AdminEditStaffState extends State<AdminEditStaff> {
                 ),
                 const SizedBox(height: 24),
 
-                SizedBox(
-                  width: 300,
-                  child: TextField(
-                    controller: vm.passwordController,
-                    obscureText: true,
-                    decoration: const InputDecoration(
-                      enabledBorder: OutlineInputBorder(),
-                      focusedBorder: OutlineInputBorder(),
-                      labelText: 'Password',
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 30),
 
                 Align(
                   alignment: Alignment.centerRight,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      vm.updateSelectedStaff();
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
 
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Staff updated successfully'),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          minimumSize: const Size(100, 40),
                         ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size(100, 40),
-                    ),
-                    child: const Text('Edit Staff'),
+                       onPressed: () async {
+                        if (vm.selectedDocId == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Please select a staff first'),
+                            ),
+                          );
+                          return;
+                        }
+
+                        final confirm = await showDialog<bool>(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: const Text('Delete Staff'),
+                              content: const Text('Are you sure you want to delete this staff?'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context, false);
+                                  },
+                                  child: const Text('Cancel'),
+                                ),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red,
+                                  ),
+                                  onPressed: () {
+                                    Navigator.pop(context, true);
+                                  },
+                                  child: const Text('Delete'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+
+                        if (confirm == true) {
+                          await vm.deleteSelectedStaff();
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Staff deleted successfully'),
+                            ),
+                          );
+                        }
+                      },
+                        child: const Text('Delete'),
+                      ),
+
+                      const SizedBox(width: 10),
+
+                      ElevatedButton(
+                        onPressed: () async {
+                          if (vm.selectedDocId == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Please select a staff first'),
+                              ),
+                            );
+                            return;
+                          }
+
+                          await vm.updateSelectedStaff();
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Staff updated successfully'),
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(100, 40),
+                        ),
+                        child: const Text('Edit Staff'),
+                      ),
+
+                    ],
                   ),
                 ),
               ],

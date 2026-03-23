@@ -1,121 +1,204 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart'; // 1. IMPORT PROVIDER
-import 'package:flutter_assignment/features/customer/viewmodels/customer_discover_viewmodel.dart'; // 2. IMPORT THE NEW VIEWMODEL
-import 'package:flutter_assignment/features/customer/views/customer_recommendationCard_view.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_assignment/core/widgets/commonAppbar.dart';
+import 'package:flutter_assignment/features/customer/viewmodels/customer_discover_viewmodel.dart'; 
+import 'package:flutter_assignment/features/customer/models/course_model.dart';
+import 'package:intl/intl.dart';
 
-// We can change this to a StatelessWidget because Provider handles the state now!
-class CustomerDiscoverView extends StatelessWidget {
-  const CustomerDiscoverView({super.key});
+class DiscoverView extends StatefulWidget {
+  final ValueNotifier<ThemeMode> themeNotifier;
+
+  const DiscoverView({super.key, required this.themeNotifier});
+
+  @override
+  State<DiscoverView> createState() => _DiscoverViewState();
+}
+
+class _DiscoverViewState extends State<DiscoverView> {
+  String _selectedCategory = 'All';
+  final List<String> _categories = ['All', 'Java', 'Python', 'C++', 'Flutter', 'UI/UX'];
 
   @override
   Widget build(BuildContext context) {
-    // 3. LISTEN TO THE VIEWMODEL
+    // Watches the live stream from the ViewModel
     final viewModel = context.watch<CustomerDiscoverViewModel>();
 
     return Scaffold(
-      body: Column(
-        children: [
-          // 1. Search Bar for courses/tutors
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: TextField(
-              // 4. CONNECT THE SEARCH BAR
-              onChanged: (value) => viewModel.updateSearchQuery(value),
-              decoration: InputDecoration(
-                hintText: 'Search courses (Java, C++, Python)',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+      appBar: CommonAppBar(
+        title: "Discover Skills",
+        showBack: true,
+        showProfile: false,
+        themeNotifier: widget.themeNotifier,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 1. Category Filters (Now the main focus)
+            const Text(
+              'Categories',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: _categories.map((category) {
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 10.0),
+                    child: ChoiceChip(
+                      label: Text(category),
+                      selected: _selectedCategory == category,
+                      onSelected: (bool selected) {
+                        setState(() {
+                          _selectedCategory = category;
+                        });
+                        viewModel.filterByCategory(category);
+                      },
+                      selectedColor: Colors.blue.shade200,
+                    ),
+                  );
+                }).toList(),
               ),
             ),
-          ),
+            const SizedBox(height: 25),
 
-          // 2. Filter Row (Price & Category)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Row(
-              children: [
-                Expanded(
-                  child: DropdownButtonFormField<String>(
-                    value: viewModel.selectedPriceSort, // Bind to ViewModel
-                    items: const [
-                      DropdownMenuItem(value: 'Price', child: Text('Sort by Price')),
-                      DropdownMenuItem(value: 'Low', child: Text('Lowest First')),
-                      DropdownMenuItem(value: 'High', child: Text('Highest First')),
-                    ],
-                    // 5. CONNECT THE PRICE FILTER
-                    onChanged: (val) {
-                      if (val != null) viewModel.updatePriceSort(val);
-                    },
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      isDense: true,
-                      labelText: 'Price',
+            const Text(
+              'Available 1-to-1 Slots',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            
+            Expanded(
+              child: viewModel.isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : viewModel.filteredCourses.isEmpty
+                ? Center(
+                    child: Text(
+                      'No upcoming slots for $_selectedCategory right now.',
+                      style: const TextStyle(color: Colors.grey),
                     ),
+                  )
+                : ListView.builder(
+                    itemCount: viewModel.filteredCourses.length,
+                    itemBuilder: (context, index) {
+                      final course = viewModel.filteredCourses[index];
+                      return _buildCourseCard(context, course, viewModel);
+                    },
+                  ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCourseCard(BuildContext context, CourseModel course, CustomerDiscoverViewModel viewModel) {
+    String formattedDate = DateFormat('EEE, MMM d').format(course.scheduledTime);
+    String formattedTime = DateFormat('h:mm a').format(course.scheduledTime);
+
+    return Card(
+      elevation: 3,
+      margin: const EdgeInsets.only(bottom: 16),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    course.category,
+                    style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
                   ),
                 ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: DropdownButtonFormField<String>(
-                    value: viewModel.selectedCategory, // Bind to ViewModel
-                    items: const [
-                      DropdownMenuItem(value: 'Category', child: Text('All Categories')),
-                      DropdownMenuItem(value: 'Java', child: Text('Java')),
-                      DropdownMenuItem(value: 'Python', child: Text('Python')),
-                      DropdownMenuItem(value: 'C++', child: Text('C++')),
-                    ],
-                    // 6. CONNECT THE CATEGORY FILTER
-                    onChanged: (val) {
-                      if (val != null) viewModel.updateCategory(val);
-                    },
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      isDense: true,
-                      labelText: 'Category',
+                Row(
+                  children: [
+                    const Icon(Icons.access_time, size: 16, color: Colors.orange),
+                    const SizedBox(width: 4),
+                    Text(
+                      "$formattedDate at $formattedTime",
+                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.orange),
                     ),
-                  ),
+                  ],
                 ),
               ],
             ),
-          ),
-
-          const SizedBox(height: 16),
-          
-          // Section Title
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Recommendations',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
+            const SizedBox(height: 12),
+            Text(
+              course.title,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-          ),
-
-          // 3. Dynamic List of Tutors/Courses
-          Expanded(
-            // 7. REPLACE HARDCODED LIST WITH LISTVIEW.BUILDER
-            child: ListView.builder(
-              padding: const EdgeInsets.only(top: 8),
-              itemCount: viewModel.displayedCourses.length,
-              itemBuilder: (context, index) {
-                // Get the specific course data
-                final course = viewModel.displayedCourses[index];
+            const SizedBox(height: 4),
+            Text(
+              'Mentor: ${course.tutorName}',
+              style: const TextStyle(fontSize: 14, color: Colors.grey),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              course.description,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 14),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  course.price == 0 ? 'Free' : 'RM ${course.price.toStringAsFixed(2)}',
+                  style: TextStyle(
+                    fontSize: 16, 
+                    fontWeight: FontWeight.bold, 
+                    color: course.price == 0 ? Colors.green : Colors.orange.shade700, 
+                  ),
+                ),
                 
-                // Pass that data into your RecommendationCard
-                return RecommendationCard(
-                  username: '${course.tutorName} (${course.category})',
-                  price: 'RM${course.price.toStringAsFixed(0)}',
-                  onViewPressed: () {
-                    print('Navigating to profile of ${course.tutorName}');
+                ElevatedButton(
+                  onPressed: () async {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Booking ${course.title}...'), duration: const Duration(seconds: 1)),
+                    );
+
+                    String result = await viewModel.bookCourse(course);
+
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                      
+                      if (result == "Success") {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("Successfully booked! See you on $formattedDate."),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(result), backgroundColor: Colors.red),
+                        );
+                      }
+                    }
                   },
-                );
-              },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  ),
+                  child: const Text('Book Now'),
+                ), 
+              ],
             ),
-          )
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../models/LoginPage_models.dart'; // Import your new page model
+import '../models/LoginPage_models.dart'; 
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LoginViewModel extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -37,13 +38,26 @@ class LoginViewModel extends ChangeNotifier {
     _setLoading(true);
     _errorMessage = '';
 
+
+
     try {
-      await _auth.signInWithEmailAndPassword(
+      UserCredential userCredential= await _auth.signInWithEmailAndPassword(
         email: loginForm.email.trim(),
         password: loginForm.password.trim(),
       );
+
+      String uid=userCredential.user!.uid;
+      DocumentSnapshot userDoc=await FirebaseFirestore.instance.collection('users').doc(uid).get();
+
+      if(!userDoc.exists){
+        await _auth.signOut();
+        _errorMessage="This account has been deleted";
+        _setLoading(false);
+        return false;
+      }
+
       _setLoading(false);
-      return true; // Success!
+      return true;
 
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -64,5 +78,20 @@ class LoginViewModel extends ChangeNotifier {
   void _setLoading(bool value) {
     _isLoading = value;
     notifyListeners();
+  }
+
+  Future<String> sendPasswordReset(String resetEmail)async{
+    if(resetEmail.trim().isEmpty){
+      return 'Please Enter an email address';
+    }
+    _setLoading(true);
+    try{
+      await _auth.sendPasswordResetEmail(email: resetEmail.trim());
+      _setLoading(false);
+      return 'Success';
+    }catch(e){
+      _setLoading(false);
+      return e.toString();
+    }
   }
 }

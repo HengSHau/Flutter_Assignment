@@ -1,68 +1,60 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_assignment/features/admin/models/admin_staffData_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AdminEditStaffViewModel extends ChangeNotifier {
   final TextEditingController usernameController = TextEditingController();
-  final TextEditingController gmailController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController contactNoController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   String? selectedRole;
   String? selectedGender;
-  int? selectedIndex;
+  String? selectedDocId;
 
-  final List<StaffModel> staffList = [
-    StaffModel(
-      username: 'Alice',
-      gmail: 'alice@gmail.com',
-      role: 'Finance',
-      contactNo: '0123456789',
-      gender: 'Female',
-      password: '123456',
-    ),
-    StaffModel(
-      username: 'Ben',
-      gmail: 'ben@gmail.com',
-      role: 'Admin',
-      contactNo: '0112233445',
-      gender: 'Male',
-      password: 'abcdef',
-    ),
-    StaffModel(
-      username: 'Chris',
-      gmail: 'chris@gmail.com',
-      role: 'Finance',
-      contactNo: '0199988877',
-      gender: 'Male',
-      password: 'qwerty',
-    ),
-  ];
+  void selectStaff(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
 
-  void selectStaff(int index) {
-    final staff = staffList[index];
-    selectedIndex = index;
-
-    usernameController.text = staff.username;
-    gmailController.text = staff.gmail;
-    selectedRole = staff.role;
-    contactNoController.text = staff.contactNo;
-    passwordController.text = staff.password;
-    selectedGender = staff.gender;
+    selectedDocId = doc.id;
+    usernameController.text = data['username'] ?? '';
+    emailController.text = data['email'] ?? '';
+    contactNoController.text = data['contactNo'] ?? '';
+    passwordController.text = data['password'] ?? '';
+    selectedGender = data['gender'];
 
     notifyListeners();
   }
 
-  void updateSelectedStaff() {
-    if (selectedIndex == null) return;
+  Future<void> updateSelectedStaff() async {
+    if (selectedDocId == null) return;
 
-    staffList[selectedIndex!] = staffList[selectedIndex!].copyWith(
-      username: usernameController.text,
-      gmail: gmailController.text,
-      role: selectedRole,
-      contactNo: contactNoController.text,
-      gender: selectedGender,
-      password: passwordController.text,
-    );
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(selectedDocId)
+        .update({
+      'username': usernameController.text.trim(),
+      'email': emailController.text.trim(),
+      'contactNo': contactNoController.text.trim(),
+      'gender': selectedGender,
+      'password': passwordController.text.trim(),
+    });
+
+    notifyListeners();
+  }
+
+  Future<void> deleteSelectedStaff() async {
+    if (selectedDocId == null) return;
+
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(selectedDocId)
+        .delete();
+
+    usernameController.clear();
+    emailController.clear();
+    contactNoController.clear();
+    passwordController.clear();
+    selectedGender = null;
+    selectedDocId = null;
 
     notifyListeners();
   }
@@ -79,7 +71,7 @@ class AdminEditStaffViewModel extends ChangeNotifier {
 
   void disposeControllers() {
     usernameController.dispose();
-    gmailController.dispose();
+    emailController.dispose();
     contactNoController.dispose();
     passwordController.dispose();
   }
