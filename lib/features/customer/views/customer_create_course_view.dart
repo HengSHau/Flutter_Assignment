@@ -15,6 +15,7 @@ class CustomerCreateCourseView extends StatefulWidget{
 class _CustomerCreateCourseViewState extends State<CustomerCreateCourseView>{
   late TextEditingController _titleController;
   late TextEditingController _descriptionController;
+  late TextEditingController _priceController;
   String _selectedCategory = 'Java';
   
   // 1. Variable to store the picked slot
@@ -27,12 +28,14 @@ class _CustomerCreateCourseViewState extends State<CustomerCreateCourseView>{
     super.initState();
     _titleController=TextEditingController();
     _descriptionController=TextEditingController();
+    _priceController=TextEditingController();
   }
 
   @override
   void dispose(){
     _titleController.dispose();
     _descriptionController.dispose();
+    _priceController.dispose();
     super.dispose();
   }
 
@@ -132,7 +135,18 @@ class _CustomerCreateCourseViewState extends State<CustomerCreateCourseView>{
               ),
               const SizedBox(height: 20),
 
-              // ✨ NEW: UI Tile for selecting the time slot ✨
+              TextField(
+                controller: _priceController,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                decoration: const InputDecoration(
+                  labelText: 'Price (Optional)',
+                  hintText: 'Leave blank for a Free session',
+                  prefixText: 'RM ', 
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 20),
+
               Container(
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
@@ -150,7 +164,7 @@ class _CustomerCreateCourseViewState extends State<CustomerCreateCourseView>{
                     ),
                   ),
                   trailing: const Icon(Icons.arrow_drop_down),
-                  onTap: _pickDateTime, // Calls your picker function
+                  onTap: _pickDateTime, 
                 ),
               ),
 
@@ -170,11 +184,14 @@ class _CustomerCreateCourseViewState extends State<CustomerCreateCourseView>{
                       return;
                     }
 
+                    double enteredPrice=double.tryParse(_priceController.text)??0.0;
+                    
                     bool success=await viewModel.createCourse(
                       title:_titleController.text.trim(),
                       description:_descriptionController.text.trim(),
                       category:_selectedCategory,
                       scheduledTime: _selectedDateTime!,
+                      price:enteredPrice,
                     );
                     
                     if(success && mounted){

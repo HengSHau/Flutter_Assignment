@@ -9,7 +9,8 @@ class CourseModel {
   final String tutorId;
   final String meetLink;
   final DateTime scheduledTime;
-  final bool isBooked; // NEW: Essential for 1-to-1 logic
+  final bool isBooked; 
+  final double price;
 
   CourseModel({
     required this.id,
@@ -20,7 +21,8 @@ class CourseModel {
     required this.tutorId,
     required this.meetLink,
     required this.scheduledTime,
-    this.isBooked = false, // Default to false when a tutor creates it
+    this.isBooked = false, 
+    this.price = 0.0,
   });
 
   factory CourseModel.fromMap(String documentId, Map<String, dynamic> map) {
@@ -35,6 +37,7 @@ class CourseModel {
       // Convert Firestore Timestamp to Flutter DateTime
       scheduledTime: (map['scheduledTime'] as Timestamp).toDate(),
       isBooked: map['isBooked'] ?? false,
+      price: (map['price'] ?? 0.0).toDouble(),
     );   
   }
 
@@ -49,6 +52,7 @@ class CourseModel {
       // Convert Flutter DateTime to Firestore Timestamp
       'scheduledTime': Timestamp.fromDate(scheduledTime),
       'isBooked': isBooked,
+      'price': price,
     };
   }
 }

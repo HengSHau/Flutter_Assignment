@@ -154,10 +154,15 @@ class _DiscoverViewState extends State<DiscoverView> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Community Free',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.green),
+                Text(
+                  course.price == 0 ? 'Free' : 'RM ${course.price.toStringAsFixed(2)}',
+                  style: TextStyle(
+                    fontSize: 16, 
+                    fontWeight: FontWeight.bold, 
+                    color: course.price == 0 ? Colors.green : Colors.orange.shade700, 
+                  ),
                 ),
+                
                 ElevatedButton(
                   onPressed: () async {
                     ScaffoldMessenger.of(context).showSnackBar(
