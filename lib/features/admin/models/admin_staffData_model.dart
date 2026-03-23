@@ -1,13 +1,13 @@
 class StaffModel {
   final String username;
-  final String gmail;
+  final String email;
   final String contactNo;
   final String gender;
   final String password;
 
   StaffModel({
     required this.username,
-    required this.gmail,
+    required this.email,
     required this.contactNo,
     required this.gender,
     required this.password,
@@ -15,14 +15,14 @@ class StaffModel {
 
   StaffModel copyWith({
     String? username,
-    String? gmail,
+    String? email,
     String? contactNo,
     String? gender,
     String? password,
   }) {
     return StaffModel(
       username: username ?? this.username,
-      gmail: gmail ?? this.gmail,
+      email: email ?? this.email,
       contactNo: contactNo ?? this.contactNo,
       gender: gender ?? this.gender,
       password: password ?? this.password,
