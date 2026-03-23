@@ -7,6 +7,7 @@ class AdminEditStaffViewModel extends ChangeNotifier {
   final TextEditingController contactNoController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  String? selectedRole;
   String? selectedGender;
   String? selectedDocId;
 
@@ -60,6 +61,11 @@ class AdminEditStaffViewModel extends ChangeNotifier {
 
   void changeGender(String? value) {
     selectedGender = value;
+    notifyListeners();
+  }
+
+  void changeRole(String? value){
+    selectedRole = value;
     notifyListeners();
   }
 

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_assignment/features/settings/views/helpSupport_view.dart';
+import 'package:flutter_assignment/features/settings/views/feedback_view.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key,required this.themeNotifier,});
@@ -28,7 +30,14 @@ class _SettingsPageState extends State<SettingsPage> {
             const SizedBox(height: 25), 
 
             ElevatedButton.icon( 
-              onPressed: () {}, 
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => HelpSupportPage(),
+                  )
+                );
+              }, 
               icon: const Icon( Icons.question_mark, size: 16, ), 
               label: const Text( 
                 'Help & Support', 
@@ -41,7 +50,14 @@ class _SettingsPageState extends State<SettingsPage> {
             const SizedBox(height: 20),
 
             ElevatedButton.icon( 
-              onPressed: () {}, 
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => FeedbackPage(),
+                  )
+                );
+              }, 
               icon: const Icon( Icons.feedback, size: 16, ), 
               label: const Text( 
                 'Feedback', 
