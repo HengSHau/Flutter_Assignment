@@ -1,8 +1,8 @@
-class FinanceBarData {
+class FinanceReportData {
   final String label;
   final double value;
 
-  FinanceBarData({
+  FinanceReportData({
     required this.label,
     required this.value,
   });
