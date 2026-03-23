@@ -99,9 +99,6 @@ class CustomerLearningViewModel extends ChangeNotifier {
           .doc(courseId)
           .update({'isBooked': false});
 
-      // NOTE: We don't need to call any refresh method here.
-      // The Stream listener above will detect the deletion in the 'bookings' 
-      // collection and update the UI automatically!
       
     } catch (e) {
       print("Error canceling booking: $e");

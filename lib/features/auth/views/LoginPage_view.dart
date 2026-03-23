@@ -11,7 +11,6 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 2. GET THE VIEWMODEL INSTANCE HERE
     final loginViewModel = context.watch<LoginViewModel>();
 
     return Scaffold(
@@ -41,7 +40,6 @@ class LoginPage extends StatelessWidget {
                 SizedBox(
                   width: 300,
                   child: TextField(
-                    // 3. CAPTURE EMAIL INPUT
                     onChanged: (value) => loginViewModel.updateEmail(value),
                     decoration: const InputDecoration(
                       enabledBorder: OutlineInputBorder(),
@@ -57,7 +55,6 @@ class LoginPage extends StatelessWidget {
                   width: 300,
                   child: TextField(
                     obscureText: true,
-                    // 4. CAPTURE PASSWORD INPUT
                     onChanged: (value) => loginViewModel.updatePassword(value),
                     decoration: const InputDecoration(
                       enabledBorder: OutlineInputBorder(),
@@ -67,7 +64,6 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
 
-                // Display Error Message if login fails
                 if (loginViewModel.errorMessage.isNotEmpty) ...[
                   const SizedBox(height: 10),
                   Text(
@@ -75,6 +71,76 @@ class LoginPage extends StatelessWidget {
                     style: const TextStyle(color: Colors.red, fontSize: 12),
                   ),
                 ],
+                
+                Align(
+                  alignment: Alignment.centerRight,
+                  child:TextButton(
+                    onPressed: (){
+                      TextEditingController resetEmailController=TextEditingController();
+
+                      showDialog(
+                        context:context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title:const Text('Reset Password'),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Text('Enter Your Email address to reset password'),
+                                const SizedBox(height: 16),
+                                TextField(
+                                  controller: resetEmailController,
+                                  keyboardType: TextInputType.emailAddress,
+                                  decoration: const InputDecoration(
+                                    hintText: 'Email Address',
+                                    border:OutlineInputBorder(),
+                                  ),
+                                )
+                              ],
+                            ),
+                            actions:[
+                              TextButton(
+                                onPressed: ()=>Navigator.pop(context),
+                                child: const Text('Cancel'),
+                              ),
+                              ElevatedButton(
+                                style:ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.blue,
+                                  foregroundColor: Colors.white
+                                ),
+                                onPressed: ()async{
+                                  FocusScope.of(context).unfocus();
+
+                                  String result=await loginViewModel.sendPasswordReset(resetEmailController.text); 
+                                  if(context.mounted){
+                                    Navigator.pop(context);
+
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content:Text(result=="Success"?'Reset link to your email!':result),
+                                        backgroundColor: result=="Success"?Colors.green:Colors.red,
+                                      ),
+                                    );
+                                  }
+                                },
+                                child: const Text('Send Link'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                    child:const Text(
+                      'Forgot Password',
+                      style: TextStyle(
+                        color:Colors.blue,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+
 
                 Align(
                   alignment: Alignment.centerLeft,
@@ -102,7 +168,6 @@ class LoginPage extends StatelessWidget {
                 Align(
                   alignment: Alignment.centerRight,
                   child: ElevatedButton(
-                    // 5. USE THE INSTANCE FOR ISLOADING
                     onPressed: loginViewModel.isLoading
                     ? null
                     : () async {
@@ -112,12 +177,10 @@ class LoginPage extends StatelessWidget {
                       if(success && context.mounted){
                         Navigator.pushReplacement(
                           context,
-                          // 7. FIX THEMENOTIFIER VARIABLE
                           MaterialPageRoute(builder: (_) => Home(themeNotifier: themeNotifier,)),
                         );
                       }
                     },
-                    // Show a loading circle or text
                     child: loginViewModel.isLoading 
                       ? const SizedBox(width: 15, height: 15, child: CircularProgressIndicator(strokeWidth: 2)) 
                       : const Text('Login'),

@@ -3,6 +3,7 @@ import 'package:flutter_assignment/core/widgets/commonAppbar.dart';
 import 'package:flutter_assignment/features/profile/viewmodels/editProfile_viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_assignment/features/profile/models/user_profile_model.dart';
+import 'package:flutter_assignment/features/auth/views/change_password_view.dart'; 
 
 class EditProfileView extends StatefulWidget {
   const EditProfileView({super.key,required this.themeNotifier,});
@@ -17,7 +18,6 @@ class _EditProfileViewState extends State<EditProfileView> {
   late TextEditingController _usernameController;
   late TextEditingController _emailController;
   late TextEditingController _contactController;
-  late TextEditingController _passwordController;
 
   String _selectedGender='Male';
   bool _isInitialized=false;
@@ -28,7 +28,6 @@ class _EditProfileViewState extends State<EditProfileView> {
     _usernameController=TextEditingController();
     _emailController=TextEditingController();
     _contactController=TextEditingController();
-    _passwordController=TextEditingController();
   }
 
   @override
@@ -148,15 +147,27 @@ class _EditProfileViewState extends State<EditProfileView> {
                 const SizedBox(height: 24),
 
                 SizedBox(
-                  width: 300,
-                  child: TextField(
-                    controller: _passwordController,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      enabledBorder: const OutlineInputBorder(),
-                      focusedBorder: const OutlineInputBorder(),
-                      labelText: 'Password',
+                  width:300,
+                  height:50,
+                  child:OutlinedButton.icon(
+                    icon:const Icon(Icons.lock_reset,color: Colors.redAccent),
+                    label:const Text(
+                      'Change Password',
+                      style:TextStyle(color:Colors.redAccent,fontWeight:FontWeight.bold),
                     ),
+                    style: OutlinedButton.styleFrom(
+                      side:const BorderSide(color:Colors.redAccent),
+                      shape:RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    onPressed: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context)=>ChangePasswordView(themeNotifier: widget.themeNotifier),
+                        )
+                      );
+                    },
                   ),
                 ),
                 const SizedBox(height: 30),
