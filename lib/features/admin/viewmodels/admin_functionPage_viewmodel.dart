@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class AdminFunctionViewModel {
+class AdminFunctionViewModel extends ChangeNotifier{
   final List<String> tabs = [
     'Add Staff',
     'Edit Staff',
@@ -11,5 +11,11 @@ class AdminFunctionViewModel {
 
   void changeTab(int index) {
     currentIndex = index;
+  }
+
+  String ? selectedRole;
+  void changeRole(String?value){
+    selectedRole = value;
+    notifyListeners();
   }
 }
