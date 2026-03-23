@@ -125,7 +125,7 @@ class _AdminEditStaffState extends State<AdminEditStaff> {
                 SizedBox(
                   width: 300,
                   child: DropdownButtonFormField<String>(
-                    initialValue: vm.selectedRole,
+                    value: vm.selectedRole,
                     decoration: const InputDecoration(
                       labelText: 'Role',
                       enabledBorder: OutlineInputBorder(),
@@ -133,11 +133,11 @@ class _AdminEditStaffState extends State<AdminEditStaff> {
                     ),
                     items: const [
                       DropdownMenuItem(
-                        value: 'Admin',
+                        value: 'admin',
                         child: Text('Admin'),
                       ),
                       DropdownMenuItem(
-                        value: 'Finance',
+                        value: 'finance',
                         child: Text('Finance'),
                       ),
                     ],

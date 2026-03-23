@@ -20,6 +20,12 @@ class AdminEditStaffViewModel extends ChangeNotifier {
     contactNoController.text = data['contactNo'] ?? '';
     passwordController.text = data['password'] ?? '';
     selectedGender = data['gender'];
+    
+    if (data['role'] != null) {
+      selectedRole = data['role'].toString().toLowerCase();
+    } else {
+      selectedRole = null;
+    }
 
     notifyListeners();
   }
@@ -35,6 +41,7 @@ class AdminEditStaffViewModel extends ChangeNotifier {
       'email': emailController.text.trim(),
       'contactNo': contactNoController.text.trim(),
       'gender': selectedGender,
+      'role': selectedRole, 
       'password': passwordController.text.trim(),
     });
 
@@ -54,6 +61,8 @@ class AdminEditStaffViewModel extends ChangeNotifier {
     contactNoController.clear();
     passwordController.clear();
     selectedGender = null;
+    // ✨ FIX 3: Clear the role when deleting a staff member
+    selectedRole = null; 
     selectedDocId = null;
 
     notifyListeners();
