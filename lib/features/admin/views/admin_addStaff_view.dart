@@ -65,7 +65,6 @@ class AdminAddStaffState extends State<AdminAddStaff> {
       'gender': selectedGender,
       'role': selectedRole,
       'uid': uid,
-      'password': password,
       'createdAt': Timestamp.now(),
     });
 

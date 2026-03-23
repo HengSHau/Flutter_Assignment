@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_assignment/features/admin/viewmodels/admin_editStaff_viewmodel.dart';
 
 class AdminEditStaff extends StatefulWidget {
@@ -46,7 +47,7 @@ class _AdminEditStaffState extends State<AdminEditStaff> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance.collection('users').snapshots(),
+                    stream: FirebaseFirestore.instance.collection('users').where('role',isNotEqualTo: 'Learner').snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(child: CircularProgressIndicator());
@@ -56,7 +57,16 @@ class _AdminEditStaffState extends State<AdminEditStaff> {
                         return const Center(child: Text('Error loading staff'));
                       }
 
-                      final docs = snapshot.data?.docs ?? [];
+                      final alldocs = snapshot.data?.docs ?? [];
+
+                      final currentUserId=FirebaseAuth.instance.currentUser?.uid;
+
+                      final docs=alldocs.where((doc){
+                        final data=doc.data()as Map<String,dynamic>;
+                        bool isNotSuperAdmin=data['username']!='Super Admin';
+                        bool isNotMyself=doc.id!=currentUserId;
+                        return isNotMyself&&isNotSuperAdmin;
+                      }).toList();
 
                       if (docs.isEmpty) {
                         return const Center(child: Text('No staff found'));
@@ -150,19 +160,6 @@ class _AdminEditStaffState extends State<AdminEditStaff> {
                 ),
                 const SizedBox(height: 24),
 
-                SizedBox(
-                  width: 300,
-                  child: TextField(
-                    controller: vm.passwordController,
-                    obscureText: true,
-                    decoration: const InputDecoration(
-                      enabledBorder: OutlineInputBorder(),
-                      focusedBorder: OutlineInputBorder(),
-                      labelText: 'Password',
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 30),
 
                 Align(
                   alignment: Alignment.centerRight,

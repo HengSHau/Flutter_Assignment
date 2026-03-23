@@ -14,6 +14,7 @@ import 'package:flutter_assignment/features/chat/viewmodels/chat_home_viewmodel.
 import 'package:flutter_assignment/core/theme/theme.dart';
 import 'package:flutter_assignment/features/customer/viewmodels/customer_learning_viewmodel.dart';
 import 'package:flutter_assignment/features/customer/viewmodels/customer_teaching_viewmodel.dart';
+import 'package:flutter_assignment/features/auth/viewmodel/change_password_viewmodel.dart';
 
 // 1. MUST BE ASYNC for Firebase
 void main() async { 
@@ -39,6 +40,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => CustomerCreateCourseViewmodel()),
         ChangeNotifierProvider(create: (_) => CustomerLearningViewModel()),
         ChangeNotifierProvider(create: (_) => CustomerTeachingViewmodel()),
+        ChangeNotifierProvider(create: (_) => ChangePasswordViewModel()),
 
 
       ],
