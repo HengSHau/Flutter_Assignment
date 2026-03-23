@@ -16,15 +16,15 @@ class HelpSupportViewModel extends ChangeNotifier {
   final List<HelpItem> helpItems = [
     HelpItem(
       question: 'How to reset password?',
-      answer: 'Go to settings and click reset password.',
+      answer: 'Go to profile and click reset password.',
     ),
     HelpItem(
       question: 'How to contact support?',
-      answer: 'You can contact support via email or live chat.',
+      answer: 'You can contact support via email or live chat or you may submit feedback.',
     ),
     HelpItem(
-      question: 'How to check order status?',
-      answer: 'Open your order page to view current order status.',
+      question: 'How to check booked courses?',
+      answer: 'Open your function page to view current booked courses.',
     ),
   ];
 
