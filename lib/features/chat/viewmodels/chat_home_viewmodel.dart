@@ -26,12 +26,10 @@ class ChatHomeViewModel extends ChangeNotifier {
     });
   }
 
-  // --- METHOD 2: Get all registered users ---
   Stream<QuerySnapshot> getAllUsersStream() {
-    return _firestore.collection('users').snapshots();
+    return _firestore.collection('users').where('username',isNotEqualTo: 'Super Admin').snapshots();
   }
 
-  // --- METHOD 3: Create or open an existing chat room ---
   Future<String> createOrGetChat(String otherUserId, String otherUserName) async {
     final query = await _firestore
         .collection('chats')
@@ -47,7 +45,6 @@ class ChatHomeViewModel extends ChangeNotifier {
 
     final newChatRef = _firestore.collection('chats').doc();
     
-    // Get your own name from the current user profile or Firestore
     String myName = _auth.currentUser?.displayName ?? 'Me';
 
     await newChatRef.set({
