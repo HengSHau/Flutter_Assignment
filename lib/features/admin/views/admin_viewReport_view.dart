@@ -13,12 +13,31 @@ class AdminViewReportState extends State<AdminViewReport> {
   final AdminViewReportViewModel vm = AdminViewReportViewModel();
 
   @override
+  void initState() {
+    super.initState();
+    vm.addListener(_refresh);
+  }
+
+  void _refresh(){
+    setState(() {});
+  }
+
+  @override
+  void dispose(){
+    vm.removeListener(_refresh);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('View Report'),
       ),
-      body: Padding(
+      body: vm.isLoading
+      ?const Center(child:CircularProgressIndicator())
+      
+      :Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,6 +51,12 @@ class AdminViewReportState extends State<AdminViewReport> {
             ),
             const SizedBox(height: 20),
 
+
+            if(vm.courseReports.isEmpty)
+              const Expanded(
+                child:Center(child:Text("No Course found in database yet.")),
+              )
+            else
             Expanded(
               child: Container(
                 padding: const EdgeInsets.all(16),
@@ -89,6 +114,7 @@ class AdminViewReportState extends State<AdminViewReport> {
                               toY: item.totalStudents,
                               width: 20,
                               borderRadius: BorderRadius.circular(4),
+                              color:Colors.blueAccent,
                             ),
                           ],
                         );
