@@ -173,7 +173,6 @@ class LoginPage extends StatelessWidget {
                     : () async {
                       bool success = await context.read<LoginViewModel>().login();
 
-                      // 6. FIX MOUNTED CHECK
                       if(success && context.mounted){
                         Navigator.pushReplacement(
                           context,

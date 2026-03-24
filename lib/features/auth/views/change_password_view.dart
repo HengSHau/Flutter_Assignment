@@ -46,7 +46,6 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
             ),
             const SizedBox(height: 30),
 
-            // Old Password
             TextField(
               controller: _oldPasswordController,
               obscureText: true,
@@ -58,7 +57,6 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
             ),
             const SizedBox(height: 20),
 
-            // New Password
             TextField(
               controller: _newPasswordController,
               obscureText: true,
@@ -70,7 +68,6 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
             ),
             const SizedBox(height: 20),
 
-            // Confirm New Password
             TextField(
               controller: _confirmPasswordController,
               obscureText: true,
@@ -82,7 +79,6 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
             ),
             const SizedBox(height: 40),
 
-            // Update Button
             SizedBox(
               width: double.infinity,
               height: 50,
@@ -90,7 +86,6 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                 onPressed: viewModel.isLoading
                     ? null
                     : () async {
-                        // Close keyboard
                         FocusScope.of(context).unfocus();
 
                         String result = await viewModel.changePassword(
@@ -107,7 +102,6 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                                 backgroundColor: Colors.green,
                               ),
                             );
-                            // Navigate back to the Profile page
                             Navigator.pop(context);
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(

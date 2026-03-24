@@ -5,7 +5,7 @@ import 'package:flutter_assignment/features/chat/model/message_model.dart';
 
 class ChatPage extends StatefulWidget {
   final ValueNotifier<ThemeMode> themeNotifier;
-  final String chatId; // CRITICAL: Tells the page which room we are in
+  final String chatId;
   final String otherUserName; 
   final String otherUserId;
 

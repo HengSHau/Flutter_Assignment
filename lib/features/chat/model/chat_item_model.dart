@@ -17,17 +17,14 @@ class ChatItemModel {
     this.unread = 0,
   });
 
-  // Factory to convert Firebase data into our Flutter object
   factory ChatItemModel.fromFirestore(DocumentSnapshot doc, String currentUserId) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     
-    // Safety check for timestamp
     DateTime parsedTime = DateTime.now();
     if (data['lastMessageTime'] != null) {
       parsedTime = (data['lastMessageTime'] as Timestamp).toDate();
     }
 
-    // Figure out the OTHER person's name (assuming names are stored in a map)
     Map<String, dynamic> names = data['participantNames'] ?? {};
     String otherName = 'Unknown User';
     String otherId='';
