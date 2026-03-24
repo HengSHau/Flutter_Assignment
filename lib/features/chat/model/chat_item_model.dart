@@ -44,7 +44,6 @@ class ChatItemModel {
       otherUserId: otherId,
       lastMessage: data['lastMessage'] ?? 'No messages yet',
       time: parsedTime,
-      // Defaulting to 0 for now until you build the unread logic
       unread: data['unreadCount']?[currentUserId] ?? 0, 
     );
   }

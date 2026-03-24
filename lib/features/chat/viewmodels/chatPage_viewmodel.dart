@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // ADDED
+import 'package:firebase_auth/firebase_auth.dart';
 import '../model/message_model.dart';
 
 class ChatPageViewModel extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
-  // DYNAMIC DETECTION
   String get currentUserId => _auth.currentUser?.uid ?? '';
 
   Stream<List<MessageModel>> getMessagesStream(String chatId) {
@@ -36,7 +34,7 @@ class ChatPageViewModel extends ChangeNotifier {
         .doc(chatId)
         .collection('messages')
         .add({
-      'senderId': currentUserId, // Now uses your real Auth UID
+      'senderId': currentUserId, 
       'text': text.trim(),
       'timestamp': FieldValue.serverTimestamp(),
     });

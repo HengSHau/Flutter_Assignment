@@ -28,9 +28,7 @@ class _EditProfileViewState extends State<EditProfileView> {
     _emailController=TextEditingController();
     _contactController=TextEditingController();
 
-    // ✨ THE FIX: Force the ViewModel to fetch fresh data when this page opens
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // NOTE: Change 'loadProfile()' to the actual function name inside your EditprofileViewmodel!
       context.read<EditprofileViewmodel>().loadUserProfile(); 
       
       setState(() {

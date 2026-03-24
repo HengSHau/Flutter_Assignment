@@ -3,6 +3,7 @@ import 'package:flutter_assignment/features/admin/viewmodels/admin_functionPage_
 import 'package:flutter_assignment/features/admin/views/admin_addStaff_view.dart';
 import 'package:flutter_assignment/features/admin/views/admin_editStaff_view.dart';
 import 'package:flutter_assignment/features/admin/views/admin_viewReport_view.dart';
+import 'package:flutter_assignment/features/admin/views/admin_viewFeedback_view.dart';
 
 class AdminFunctionPage extends StatefulWidget {
   const AdminFunctionPage({super.key});
@@ -20,7 +21,8 @@ class _AdminFunctionPageState extends State<AdminFunctionPage>
   final List<Widget> pages = const [
     AdminAddStaff(),
     AdminEditStaff(),
-    AdminViewReport()
+    AdminViewReport(),
+    AdminViewFeedback()
   ];
 
   @override

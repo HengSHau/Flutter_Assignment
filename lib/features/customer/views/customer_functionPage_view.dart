@@ -132,7 +132,6 @@ class CustomerFunctionPage extends StatelessWidget {
                                   ),
                                   title: Text(course.title, style: const TextStyle(fontWeight: FontWeight.bold)),
                                   
-                                  // ✨ UPDATED: Subtitle is now a Column to show the Time Slot
                                   subtitle: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [

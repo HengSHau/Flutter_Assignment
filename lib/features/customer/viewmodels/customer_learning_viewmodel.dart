@@ -1,4 +1,4 @@
-import 'dart:async'; // Required for StreamSubscription
+import 'dart:async'; 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,7 +8,6 @@ class CustomerLearningViewModel extends ChangeNotifier {
   bool _isLoading = true;
   List<CourseModel> _bookedCourses = [];
   
-  // ✨ THE LIVE SUBSCRIPTION
   StreamSubscription? _bookingSubscription;
 
   bool get isLoading => _isLoading;
@@ -17,7 +16,7 @@ class CustomerLearningViewModel extends ChangeNotifier {
   CustomerLearningViewModel() {
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
-        _bookingSubscription?.cancel(); // Stop listening on logout
+        _bookingSubscription?.cancel(); 
         _bookedCourses = [];
         _isLoading = false;
         notifyListeners();
@@ -27,7 +26,6 @@ class CustomerLearningViewModel extends ChangeNotifier {
     });
   }
 
-  // ✨ THE LIVE FEED: Listening to the "bookings" collection
   void _startListeningToBookings(String uid) {
     _isLoading = true;
     notifyListeners();
@@ -37,10 +35,9 @@ class CustomerLearningViewModel extends ChangeNotifier {
     _bookingSubscription = FirebaseFirestore.instance
         .collection('bookings')
         .where('studentId', isEqualTo: uid)
-        .snapshots() // 1. Listen for new or removed bookings
+        .snapshots() 
         .listen((bookingSnapshot) async {
-      
-      // Extract course IDs from the current bookings
+
       List<String> courseIds = bookingSnapshot.docs
           .map((doc) => doc['courseId'] as String)
           .toList();
@@ -48,7 +45,6 @@ class CustomerLearningViewModel extends ChangeNotifier {
       if (courseIds.isEmpty) {
         _bookedCourses = [];
       } else {
-        // 2. Fetch the full course details for each ID
         List<CourseModel> courses = [];
         for (String courseId in courseIds) {
           DocumentSnapshot courseDoc = await FirebaseFirestore.instance
@@ -67,7 +63,7 @@ class CustomerLearningViewModel extends ChangeNotifier {
       }
 
       _isLoading = false;
-      notifyListeners(); // 3. Refresh UI instantly!
+      notifyListeners(); 
     }, onError: (error) {
       print('Error in booking stream: $error');
       _isLoading = false;
@@ -75,25 +71,21 @@ class CustomerLearningViewModel extends ChangeNotifier {
     });
   }
 
-  // ✨ OPTIONAL: Added the Cancel Booking logic we discussed!
   Future<void> cancelBooking(String courseId) async {
     try {
       String uid = FirebaseAuth.instance.currentUser?.uid ?? '';
       if (uid.isEmpty) return;
 
-      // Find the booking record
       QuerySnapshot bookingSnapshot = await FirebaseFirestore.instance
           .collection('bookings')
           .where('studentId', isEqualTo: uid)
           .where('courseId', isEqualTo: courseId)
           .get();
 
-      // Delete the booking
       for (var doc in bookingSnapshot.docs) {
         await doc.reference.delete();
       }
 
-      // Update the course to be available again for others
       await FirebaseFirestore.instance
           .collection('courses')
           .doc(courseId)

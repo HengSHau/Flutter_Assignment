@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_assignment/core/widgets/commonAppbar.dart'; 
-import 'package:flutter_assignment/features/auth/viewmodel/change_password_viewmodel.dart'; // Adjust path
+import 'package:flutter_assignment/features/auth/viewmodel/change_password_viewmodel.dart';
 
 class ChangePasswordView extends StatefulWidget {
   final ValueNotifier<ThemeMode> themeNotifier;

@@ -20,7 +20,6 @@ class _DiscoverViewState extends State<DiscoverView> {
 
   @override
   Widget build(BuildContext context) {
-    // Watches the live stream from the ViewModel
     final viewModel = context.watch<CustomerDiscoverViewModel>();
 
     return Scaffold(
@@ -35,7 +34,6 @@ class _DiscoverViewState extends State<DiscoverView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 1. Category Filters (Now the main focus)
             const Text(
               'Categories',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),

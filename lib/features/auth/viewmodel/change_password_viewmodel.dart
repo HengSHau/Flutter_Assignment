@@ -6,7 +6,6 @@ class ChangePasswordViewModel extends ChangeNotifier {
   bool get isLoading => _isLoading;
 
   Future<String> changePassword(String oldPassword, String newPassword, String confirmPassword) async {
-    // 1. Basic Validation
     if (oldPassword.isEmpty || newPassword.isEmpty) return "Please fill in all fields.";
     if (newPassword != confirmPassword) return "New passwords do not match.";
     if (newPassword.length < 6) return "New password must be at least 6 characters.";
@@ -22,16 +21,13 @@ class ChangePasswordViewModel extends ChangeNotifier {
         return "Error: No user logged in.";
       }
 
-      // ✨ 2. RE-AUTHENTICATION (The Firebase Security Requirement)
       AuthCredential credential = EmailAuthProvider.credential(
         email: user.email!,
         password: oldPassword,
       );
-      
-      // Prove to Firebase that the user knows their current password
+
       await user.reauthenticateWithCredential(credential);
 
-      // ✨ 3. UPDATE PASSWORD
       await user.updatePassword(newPassword);
 
       _isLoading = false;
@@ -41,7 +37,6 @@ class ChangePasswordViewModel extends ChangeNotifier {
     } on FirebaseAuthException catch (e) {
       _isLoading = false;
       notifyListeners();
-      // Catch specific Firebase errors
       if (e.code == 'wrong-password' || e.code == 'invalid-credential') {
         return "The old password you entered is incorrect.";
       }

@@ -18,7 +18,6 @@ class _CustomerCreateCourseViewState extends State<CustomerCreateCourseView>{
   late TextEditingController _priceController;
   String _selectedCategory = 'Java';
   
-  // 1. Variable to store the picked slot
   DateTime? _selectedDateTime;
 
   final List<String>_categories=['Java','Python','C++','Flutter','UI/UX']; 
@@ -39,7 +38,6 @@ class _CustomerCreateCourseViewState extends State<CustomerCreateCourseView>{
     super.dispose();
   }
 
-  // 2. Logic to pick both Date and Time
   Future<void> _pickDateTime() async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,

@@ -6,16 +6,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class LoginViewModel extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  // Create an instance of your page model
   LoginPageModel loginForm = LoginPageModel();
-
   bool _isLoading = false;
   String _errorMessage = '';
-
   bool get isLoading => _isLoading;
   String get errorMessage => _errorMessage;
 
-  // Update methods called when the user types in the text fields
   void updateEmail(String email) {
     loginForm.email = email;
     notifyListeners();
@@ -26,9 +22,7 @@ class LoginViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // The login function now uses the data from your Page Model
   Future<bool> login() async {
-    // Check the validation logic inside your model first
     if (!loginForm.isValid) {
       _errorMessage = 'Please enter a valid email and password.';
       notifyListeners();
@@ -37,8 +31,6 @@ class LoginViewModel extends ChangeNotifier {
 
     _setLoading(true);
     _errorMessage = '';
-
-
 
     try {
       UserCredential userCredential= await _auth.signInWithEmailAndPassword(
@@ -72,7 +64,7 @@ class LoginViewModel extends ChangeNotifier {
     }
 
     _setLoading(false);
-    return false; // Failed
+    return false;
   }
 
   void _setLoading(bool value) {

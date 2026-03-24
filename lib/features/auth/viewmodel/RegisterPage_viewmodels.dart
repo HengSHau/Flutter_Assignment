@@ -7,7 +7,6 @@ class RegisterViewModel extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore=FirebaseFirestore.instance;
 
-  // Instance of your new page model
   RegisterPageModel registerForm = RegisterPageModel();
 
   bool _isLoading = false;
@@ -16,14 +15,11 @@ class RegisterViewModel extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String get errorMessage => _errorMessage;
 
-  // Update methods for the UI text fields
   void updateUsername(String value) { registerForm.username = value; notifyListeners(); }
   void updateEmail(String value) { registerForm.email = value; notifyListeners(); }
   void updateContactNo(String value) { registerForm.contactNo = value; notifyListeners(); }
   void updateGender(String value) { registerForm.gender = value; notifyListeners(); }
   void updatePassword(String value) { registerForm.password = value; notifyListeners(); }
-
-  // The Firebase Registration function
   Future<bool> register() async {
     if (!registerForm.isValid) {
       _errorMessage = 'Please fill all fields correctly (Password min 6 chars).';
@@ -35,13 +31,11 @@ class RegisterViewModel extends ChangeNotifier {
     _errorMessage = '';
 
     try {
-      // 1. Create the user in Firebase Auth
       UserCredential credential = await _auth.createUserWithEmailAndPassword(
         email: registerForm.email.trim(),
         password: registerForm.password.trim(),
       );
 
-      // 2. Add the username to the Firebase Auth profile
       if (credential.user != null) {
         await credential.user!.updateDisplayName(registerForm.username.trim());
 
@@ -57,7 +51,7 @@ class RegisterViewModel extends ChangeNotifier {
       }
 
       _setLoading(false);
-      return true; // Registration Success!
+      return true;
 
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -72,7 +66,7 @@ class RegisterViewModel extends ChangeNotifier {
     }
 
     _setLoading(false);
-    return false; // Failed
+    return false;
   }
 
   void _setLoading(bool value) {

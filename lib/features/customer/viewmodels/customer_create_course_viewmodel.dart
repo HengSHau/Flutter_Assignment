@@ -5,7 +5,6 @@ import 'package:flutter_assignment/features/customer/models/course_model.dart';
 
 class CustomerCreateCourseViewmodel extends ChangeNotifier {
   bool _isLoading = false;
-
   bool get isLoading => _isLoading;
   
   Future<bool> createCourse({
