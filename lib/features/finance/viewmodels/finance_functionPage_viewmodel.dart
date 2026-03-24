@@ -4,7 +4,7 @@ class FinanceFunctionViewModel {
   final List<String> tabs = [
     'Daily',
     'Average',
-    'Yearly'
+    'Status'
   ];
 
   int currentIndex = 0;
