@@ -81,7 +81,6 @@ class _AdminEditStaffState extends State<AdminEditStaff> {
                           final isSelected = vm.selectedDocId == doc.id;
 
                           return ListTile(
-                            tileColor: isSelected ? Colors.grey.shade300 : Colors.white,
                             title: Text(data['username'] ?? ''),
                             subtitle: Text(data['email'] ?? ''),
                             trailing: Text(data['gender'] ?? ''),
