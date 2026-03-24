@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 class FinanceFunctionViewModel {
   final List<String> tabs = [
     'Daily',
-    'Monthly',
-    'Yearly'
+    'Average',
+    'Status'
   ];
 
   int currentIndex = 0;

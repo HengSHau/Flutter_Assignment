@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_assignment/features/admin/viewmodels/admin_functionPage_viewmodel.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class AdminAddStaff extends StatefulWidget {
   const AdminAddStaff({super.key});
@@ -30,73 +31,90 @@ class AdminAddStaffState extends State<AdminAddStaff> {
   }
 
   Future<void> addStaff() async {
-  final username = usernameController.text.trim();
-  final email = emailController.text.trim();
-  final contactNo = contactNoController.text.trim();
-  final password = passwordController.text.trim();
+    final username = usernameController.text.trim();
+    final email = emailController.text.trim();
+    final contactNo = contactNoController.text.trim();
+    final password = passwordController.text.trim();
 
-  if (username.isEmpty ||
-      email.isEmpty ||
-      contactNo.isEmpty ||
-      password.isEmpty ||
-      selectedGender == null ||
-      selectedRole == null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Please fill in all fields'),
-      ),
-    );
-    return;
+    if (username.isEmpty ||
+        email.isEmpty ||
+        contactNo.isEmpty ||
+        password.isEmpty ||
+        selectedGender == null ||
+        selectedRole == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please fill in all fields'),
+        ),
+      );
+      return;
+    }
+
+    try {
+      // ✨ 1. Create a temporary secondary Firebase app
+      FirebaseApp secondaryApp = await Firebase.initializeApp(
+        name: 'AdminAccountCreation',
+        options: Firebase.app().options,
+      );
+
+      // ✨ 2. Use the secondary app to create the new account (so Admin stays logged in)
+      final UserCredential userCredential = await FirebaseAuth.instanceFor(app: secondaryApp)
+          .createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      final uid = userCredential.user!.uid;
+
+      // ✨ 3. Use the MAIN app to save the data to Firestore
+      await FirebaseFirestore.instance.collection('users').doc(uid).set({
+        'username': username,
+        'email': email,
+        'contactNo': contactNo,
+        'gender': selectedGender,
+        'role': selectedRole,
+        'uid': uid,
+        'createdAt': Timestamp.now(),
+      });
+
+      // ✨ 4. Delete the temporary app to clean up memory
+      await secondaryApp.delete();
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Staff account created successfully'),
+          ),
+        );
+
+        usernameController.clear();
+        emailController.clear();
+        contactNoController.clear();
+        passwordController.clear();
+
+        setState(() {
+          selectedGender = null;
+          selectedRole = null;
+        });
+      }
+    } on FirebaseAuthException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.message ?? 'Failed to create account'),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: $e'),
+          ),
+        );
+      }
+    }
   }
-
-  try {
-    final UserCredential userCredential =
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-
-    final uid = userCredential.user!.uid;
-
-    await FirebaseFirestore.instance.collection('users').doc(uid).set({
-      'username': username,
-      'email': email,
-      'contactNo': contactNo,
-      'gender': selectedGender,
-      'role': selectedRole,
-      'uid': uid,
-      'createdAt': Timestamp.now(),
-    });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Staff account created successfully'),
-      ),
-    );
-
-    usernameController.clear();
-    emailController.clear();
-    contactNoController.clear();
-    passwordController.clear();
-
-    setState(() {
-      selectedGender = null;
-      selectedRole = null;
-    });
-  } on FirebaseAuthException catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(e.message ?? 'Failed to create account'),
-      ),
-    );
-  } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Error: $e'),
-      ),
-    );
-  }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -141,30 +159,6 @@ class AdminAddStaffState extends State<AdminAddStaff> {
                       focusedBorder: OutlineInputBorder(),
                       labelText: 'Password',
                     ),
-                  ),
-                ),
-                const SizedBox(height: 24),
-
-                SizedBox(
-                  width: 300,
-                  child: DropdownButtonFormField<String>(
-                    initialValue: vm.selectedRole,
-                    decoration: const InputDecoration(
-                      labelText: 'Role',
-                      enabledBorder: OutlineInputBorder(),
-                      focusedBorder: OutlineInputBorder(),
-                    ),
-                    items: const [
-                      DropdownMenuItem(
-                        value: 'Admin',
-                        child: Text('Admin'),
-                      ),
-                      DropdownMenuItem(
-                        value: 'Finance',
-                        child: Text('Finance'),
-                      ),
-                    ],
-                    onChanged: vm.changeRole,
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -224,39 +218,39 @@ class AdminAddStaffState extends State<AdminAddStaff> {
                 ),
                 const SizedBox(height: 24),
 
-                  SizedBox(
-                    width: 300,
-                    child: DropdownButtonFormField<String>(
-                      value: selectedRole,
-                      decoration: const InputDecoration(
-                        labelText: 'Role',
-                        enabledBorder: OutlineInputBorder(),
-                        focusedBorder: OutlineInputBorder(),
-                      ),
-                      isExpanded: true,
-                      items: const [
-                        DropdownMenuItem(
-                          value: 'admin',
-                          child: Text('Admin'),
-                        ),
-                        DropdownMenuItem(
-                          value: 'finance',
-                          child: Text('Finance'),
-                        ),
-                      ],
-                      onChanged: (value) {
-                        setState(() {
-                          selectedRole = value;
-                        });
-                      },
+                SizedBox(
+                  width: 300,
+                  child: DropdownButtonFormField<String>(
+                    value: selectedRole,
+                    decoration: const InputDecoration(
+                      labelText: 'Role',
+                      enabledBorder: OutlineInputBorder(),
+                      focusedBorder: OutlineInputBorder(),
                     ),
+                    isExpanded: true,
+                    items: const [
+                      DropdownMenuItem(
+                        value: 'admin',
+                        child: Text('Admin'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'finance',
+                        child: Text('Finance'),
+                      ),
+                    ],
+                    onChanged: (value) {
+                      setState(() {
+                        selectedRole = value;
+                      });
+                    },
                   ),
+                ),
 
-                  const SizedBox(height: 24),
+                const SizedBox(height: 24),
 
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: ElevatedButton(
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: ElevatedButton(
                     onPressed: addStaff,
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size(100, 40),

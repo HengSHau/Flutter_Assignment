@@ -18,12 +18,17 @@ class EditprofileViewmodel extends ChangeNotifier{
   }
 
   Future<void> loadUserProfile() async{
+    _isLoading = true; 
+    notifyListeners(); 
+
     try{
       String uid=FirebaseAuth.instance.currentUser?.uid??'';
       if(uid.isNotEmpty){
         DocumentSnapshot doc=await FirebaseFirestore.instance.collection("users").doc(uid).get();
         if(doc.exists&&doc.data()!=null){
           _userProfile=UserProfileModel.fromMap(doc.data()as Map<String,dynamic>);
+        } else {
+          _userProfile = null; 
         }
       }
     }catch(e){
@@ -54,5 +59,4 @@ class EditprofileViewmodel extends ChangeNotifier{
       notifyListeners();
     }
   }
-
 }
