@@ -58,7 +58,6 @@ class ChatHomePageState extends State<ChatHomePage> {
                   itemBuilder: (context, index) {
                     final chat = chats[index];
                     
-                    // Logic check: Is this message unread?
                     bool isUnread = chat.unread > 0;
 
                     String formattedTime = 
@@ -83,14 +82,14 @@ class ChatHomePageState extends State<ChatHomePage> {
                             ),
                         ],
                       ),
-                      // 1. Username stays the same
+  
                       title: Text(
                         chat.otherUserName,
                         style:TextStyle(
                           fontWeight: isUnread? FontWeight.bold:FontWeight.normal,
                         ),
                       ), 
-                      // 2. BOLD SUBTITLE if unread
+
                       subtitle: Text(
                         chat.lastMessage,
                         maxLines: 1,
@@ -100,7 +99,7 @@ class ChatHomePageState extends State<ChatHomePage> {
                           color: isUnread ? Colors.black : Colors.grey[600],
                         ),
                       ),
-                      // 3. BOLD TIME if unread
+
                       trailing: Text(
                         formattedTime,
                         style: TextStyle(

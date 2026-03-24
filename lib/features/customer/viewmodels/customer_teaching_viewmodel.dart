@@ -8,7 +8,6 @@ class CustomerTeachingViewmodel extends ChangeNotifier {
   bool _isLoading = true;
   List<CourseModel> _taughtCourses = [];
   
-  // ✨ THE LIVE SUBSCRIPTION: This stays open to listen for changes
   StreamSubscription? _courseSubscription;
 
   bool get isLoading => _isLoading;
@@ -17,7 +16,7 @@ class CustomerTeachingViewmodel extends ChangeNotifier {
   CustomerTeachingViewmodel() {
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
-        _courseSubscription?.cancel(); // Stop listening if logged out
+        _courseSubscription?.cancel(); 
         _taughtCourses = [];
         _isLoading = false;
         notifyListeners();
@@ -27,18 +26,16 @@ class CustomerTeachingViewmodel extends ChangeNotifier {
     });
   }
 
-  // ✨ THE LIVE FEED: No more manual "fetching"
   void _startListeningToTaughtCourses(String uid) {
     _isLoading = true;
     notifyListeners();
 
-    // Cancel any old subscription before starting a new one
     _courseSubscription?.cancel();
 
     _courseSubscription = FirebaseFirestore.instance
         .collection('courses')
         .where('tutorId', isEqualTo: uid)
-        .snapshots() // Listen for any changes in the database
+        .snapshots() 
         .listen((snapshot) {
       
       _taughtCourses = snapshot.docs.map((doc) {
@@ -46,7 +43,7 @@ class CustomerTeachingViewmodel extends ChangeNotifier {
       }).toList();
 
       _isLoading = false;
-      notifyListeners(); // This triggers the UI refresh immediately
+      notifyListeners(); 
     }, onError: (error) {
       print('Error listening to taught courses: $error');
       _isLoading = false;
@@ -54,7 +51,6 @@ class CustomerTeachingViewmodel extends ChangeNotifier {
     });
   }
 
-  // ✨ CLEANUP: Important for memory management
   @override
   void dispose() {
     _courseSubscription?.cancel();

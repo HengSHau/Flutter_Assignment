@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart'; // CRITICAL: Need this for Timestamp!
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CourseModel {
   final String id;
@@ -34,7 +34,6 @@ class CourseModel {
       tutorName: map['tutorName'] ?? 'Unknown Tutor',
       tutorId: map['tutorId'] ?? '', 
       meetLink: map['meetLink'] ?? 'https://meet.google.com/new',    
-      // Convert Firestore Timestamp to Flutter DateTime
       scheduledTime: (map['scheduledTime'] as Timestamp).toDate(),
       isBooked: map['isBooked'] ?? false,
       price: (map['price'] ?? 0.0).toDouble(),
@@ -49,7 +48,6 @@ class CourseModel {
       'tutorName': tutorName,
       'tutorId': tutorId,
       'meetLink': meetLink, 
-      // Convert Flutter DateTime to Firestore Timestamp
       'scheduledTime': Timestamp.fromDate(scheduledTime),
       'isBooked': isBooked,
       'price': price,

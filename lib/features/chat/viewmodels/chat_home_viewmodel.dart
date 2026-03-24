@@ -7,10 +7,8 @@ class ChatHomeViewModel extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  // DYNAMIC: This now detects exactly who is logged in
   String get currentUserId => _auth.currentUser?.uid ?? '';
 
-  // --- METHOD 1: Listen to active conversations ---
   Stream<List<ChatItemModel>> getChatStream() {
     if (currentUserId.isEmpty) return Stream.value([]);
     
