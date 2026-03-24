@@ -7,7 +7,6 @@ class LoginPageModel {
     this.password = '',
   });
 
-  // You can even put page-specific validation logic here!
   bool get isValid {
     return email.isNotEmpty && email.contains('@') && password.isNotEmpty;
   }

@@ -17,18 +17,14 @@ import 'package:flutter_assignment/features/customer/viewmodels/customer_teachin
 import 'package:flutter_assignment/features/auth/viewmodel/change_password_viewmodel.dart';
 import 'package:flutter_assignment/features/settings/viewmodels/feedback_viewmodel.dart';
 
-// 1. MUST BE ASYNC for Firebase
 void main() async { 
-  // 2. Ensure Flutter bindings are ready
   WidgetsFlutterBinding.ensureInitialized();
 
-  // 3. Initialize Firebase using your auto-generated file
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
   runApp(
-    // 4. Wrap MyApp with MultiProvider so the whole app can access the ViewModel
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => LoginViewModel()),
@@ -43,8 +39,6 @@ void main() async {
         ChangeNotifierProvider(create: (_) => CustomerTeachingViewmodel()),
         ChangeNotifierProvider(create: (_) => ChangePasswordViewModel()),
         ChangeNotifierProvider(create: (_) => FeedbackViewmodel()),
-
-
       ],
       child: MyApp(),
     ),
@@ -68,7 +62,6 @@ class MyApp extends StatelessWidget {
           theme: themes.light(),
           darkTheme: themes.dark(),
           themeMode: currentMode,
-          // Your LoginPage will now successfully find the LoginViewModel!
           home: LoginPage(themeNotifier: themeNotifier), 
           debugShowCheckedModeBanner: false,
         );

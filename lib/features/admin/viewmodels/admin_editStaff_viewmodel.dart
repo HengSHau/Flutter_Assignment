@@ -61,7 +61,6 @@ class AdminEditStaffViewModel extends ChangeNotifier {
     contactNoController.clear();
     passwordController.clear();
     selectedGender = null;
-    // ✨ FIX 3: Clear the role when deleting a staff member
     selectedRole = null; 
     selectedDocId = null;
 

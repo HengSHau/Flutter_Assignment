@@ -4,7 +4,8 @@ class AdminFunctionViewModel extends ChangeNotifier{
   final List<String> tabs = [
     'Add Staff',
     'Edit Staff',
-    'View Report'
+    'View Report',
+    'View Feedback'
   ];
 
   int currentIndex = 0;

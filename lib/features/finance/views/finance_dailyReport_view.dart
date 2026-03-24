@@ -113,12 +113,10 @@ class _FinanceDailyPageState extends State<FinanceDailyPage> {
                           sideTitles: SideTitles(showTitles: false),
                         ),
 
-                        // Y轴
                         leftTitles: AxisTitles(
                           sideTitles: SideTitles(showTitles: true),
                         ),
 
-                        // X轴（category）
                         bottomTitles: AxisTitles(
                           sideTitles: SideTitles(
                             showTitles: true,
@@ -132,7 +130,7 @@ class _FinanceDailyPageState extends State<FinanceDailyPage> {
                               return Padding(
                                 padding: const EdgeInsets.only(top: 8),
                                 child: Text(
-                                  chartData[index].label, // 👈 category
+                                  chartData[index].label, 
                                   style: const TextStyle(fontSize: 10),
                                 ),
                               );
@@ -149,9 +147,7 @@ class _FinanceDailyPageState extends State<FinanceDailyPage> {
                               index.toDouble(),
                               chartData[index].value,
                             ),
-                          ),
-
-                           // 每个点                          
+                          ),                          
                         ),
                       ],
                     ),

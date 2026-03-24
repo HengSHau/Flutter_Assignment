@@ -28,11 +28,9 @@ class CustomerDiscoverViewModel extends ChangeNotifier {
     _coursesSubscription = FirebaseFirestore.instance
         .collection('courses')
         .where('isBooked', isEqualTo: false)
-        // ✨ Hides courses scheduled before right now
         .where('scheduledTime', isGreaterThanOrEqualTo: Timestamp.now())
         .snapshots() 
-        .listen((snapshot) {
-      
+        .listen((snapshot) {    
       _allCourses = snapshot.docs.map((doc) {
         return CourseModel.fromMap(doc.id, doc.data() as Map<String, dynamic>);
       }).toList();

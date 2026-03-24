@@ -51,22 +51,17 @@ class AdminAddStaffState extends State<AdminAddStaff> {
     }
 
     try {
-      // ✨ 1. Create a temporary secondary Firebase app
       FirebaseApp secondaryApp = await Firebase.initializeApp(
         name: 'AdminAccountCreation',
         options: Firebase.app().options,
       );
-
-      // ✨ 2. Use the secondary app to create the new account (so Admin stays logged in)
       final UserCredential userCredential = await FirebaseAuth.instanceFor(app: secondaryApp)
           .createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-
       final uid = userCredential.user!.uid;
 
-      // ✨ 3. Use the MAIN app to save the data to Firestore
       await FirebaseFirestore.instance.collection('users').doc(uid).set({
         'username': username,
         'email': email,
@@ -77,9 +72,8 @@ class AdminAddStaffState extends State<AdminAddStaff> {
         'createdAt': Timestamp.now(),
       });
 
-      // ✨ 4. Delete the temporary app to clean up memory
       await secondaryApp.delete();
-
+      
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

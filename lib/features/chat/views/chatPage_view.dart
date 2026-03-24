@@ -48,7 +48,6 @@ class _ChatPageState extends State<ChatPage> {
       ),
       body: Column(
         children: [
-          // 1. The Message List
           Expanded(
             child: StreamBuilder<List<MessageModel>>(
               stream: viewModel.getMessagesStream(widget.chatId),
@@ -61,7 +60,7 @@ class _ChatPageState extends State<ChatPage> {
                 final messages = snapshot.data!;
 
                 return ListView.builder(
-                  reverse: true, // Auto-scrolls to the bottom
+                  reverse: true, 
                   itemCount: messages.length,
                   itemBuilder: (context, index) {
                     final message = messages[index];
@@ -88,7 +87,6 @@ class _ChatPageState extends State<ChatPage> {
             ),
           ),
 
-          // 2. The Text Input Bar
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
